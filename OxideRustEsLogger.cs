@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Networking;
 using Oxide.Core.Configuration;
-
+using JSON;
 using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
 
@@ -270,7 +270,7 @@ namespace Oxide.Plugins
     }
 
     [Serializable]
-    public class PlayerBaseEventLogEntry {
+    public class PlayerBaseEventLogEntry : MonoBehaviour {
         // We're using snake_case because this will be serialized to JSON.
         public int timestamp;
         public string ip_address;
