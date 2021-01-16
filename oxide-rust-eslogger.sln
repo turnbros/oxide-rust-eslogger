@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.808.5
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "oxide-rust-eslogger", "oxide-rust-eslogger.csproj", "{EE11D802-6E33-4100-89B3-A6FA831C39A1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|anycpu = Debug|anycpu
+		Release|anycpu = Release|anycpu
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE11D802-6E33-4100-89B3-A6FA831C39A1}.Debug|anycpu.ActiveCfg = Debug|anycpu
+		{EE11D802-6E33-4100-89B3-A6FA831C39A1}.Debug|anycpu.Build.0 = Debug|anycpu
+		{EE11D802-6E33-4100-89B3-A6FA831C39A1}.Release|anycpu.ActiveCfg = Release|anycpu
+		{EE11D802-6E33-4100-89B3-A6FA831C39A1}.Release|anycpu.Build.0 = Release|anycpu
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EB92A5D3-1F10-41D8-B35E-4F8E812B8E37}
+	EndGlobalSection
+EndGlobal
