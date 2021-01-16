@@ -46,7 +46,9 @@ namespace Oxide.Plugins
         void OnPlayerDisconnected(BasePlayer player, string reason) {
             try
             {
-                SendEventLog(JsonUtility.ToJson(new PlayerBaseEventLogEntry(player, "OnPlayerDisconnected")));
+                PlayerBaseEventLogEntry eventLogEntry = new PlayerBaseEventLogEntry(player, "OnPlayerDisconnected");
+                string eventLogEntryString = JsonUtility.ToJson(eventLogEntry);
+                SendEventLog(eventLogEntryString);
             }
             catch (Exception error)
             {
@@ -56,10 +58,11 @@ namespace Oxide.Plugins
 
         // Called when the player sends chat to the server
         object OnPlayerChat(BasePlayer player, string message, ConVar.Chat.ChatChannel channel) {
-            // PlayerChatEventLogEntry
             try
             {
-                SendEventLog(JsonUtility.ToJson(new PlayerChatEventLogEntry(player, message)));
+                PlayerChatEventLogEntry eventLogEntry = new PlayerChatEventLogEntry(player, message);
+                string eventLogEntryString = JsonUtility.ToJson(eventLogEntry);
+                SendEventLog(eventLogEntryString);
             }
             catch (Exception error)
             {
@@ -69,14 +72,12 @@ namespace Oxide.Plugins
         }
 
         // Called when the player starts looting another player
-        void OnLootPlayer(BasePlayer player, BasePlayer target)
-        {
-            try
-            {
-                SendEventLog(JsonUtility.ToJson(new PlayerLootEventLogEntry(player, target)));
-            }
-            catch (Exception error)
-            {
+        void OnLootPlayer(BasePlayer player, BasePlayer target) {
+            try {
+                PlayerLootEventLogEntry eventLogEntry = new PlayerLootEventLogEntry(player, target);
+                string eventLogEntryString = JsonUtility.ToJson(eventLogEntry);
+                SendEventLog(eventLogEntryString);
+            } catch (Exception error) {
                 LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnLootPlayer - {error.Message}", this);
             }
         }
@@ -85,7 +86,9 @@ namespace Oxide.Plugins
         void OnPlayerAttack(BasePlayer attacker, HitInfo info) {
             try
             {
-                SendEventLog(JsonUtility.ToJson(new PlayerAttackEventLogEntry(attacker, info)));
+                PlayerAttackEventLogEntry eventLogEntry = new PlayerAttackEventLogEntry(attacker, info);
+                string eventLogEntryString = JsonUtility.ToJson(eventLogEntry);
+                SendEventLog(eventLogEntryString);
             }
             catch (Exception error)
             {
