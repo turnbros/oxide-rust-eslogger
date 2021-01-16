@@ -3,6 +3,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Networking;
 using Oxide.Core.Configuration;
+
 using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
 
@@ -31,7 +32,9 @@ namespace Oxide.Plugins
         void OnPlayerConnected(BasePlayer player) {
             try
             {
-                SendEventLog(JsonUtility.ToJson(new PlayerBaseEventLogEntry(player, "OnPlayerConnected")));
+                PlayerBaseEventLogEntry eventLogEntry = new PlayerBaseEventLogEntry(player, "OnPlayerConnected");
+                string eventLogEntryString = JsonUtility.ToJson(eventLogEntry);
+                SendEventLog(eventLogEntryString);
             }
             catch (Exception error)
             {
@@ -94,7 +97,9 @@ namespace Oxide.Plugins
         object OnPlayerDeath(BasePlayer player, HitInfo info) {
             try
             {
-                SendEventLog(JsonUtility.ToJson(new PlayerDeathEventLogEntry(player, info)));
+                PlayerBaseEventLogEntry eventLogEntry = new PlayerDeathEventLogEntry(player, info);
+                string eventLogEntryString = JsonUtility.ToJson(eventLogEntry);
+                SendEventLog(eventLogEntryString);
             }
             catch (Exception error)
             {
