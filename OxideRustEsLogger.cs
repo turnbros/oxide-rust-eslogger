@@ -2,6 +2,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Networking;
+using Oxide.Core.Configuration;
 using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
 
@@ -11,6 +12,21 @@ namespace Oxide.Plugins
     [Description("Logs player actions.")]
     class OxideRustEsLogger : RustPlugin
     {
+
+        private void LoadVariables()
+        {
+            LoadConfigVariables();
+        }
+
+        private ConfigData configData;
+        class ConfigData {
+            public string esHost { get; set; }
+            public string esPort { get; set; }
+            public string esUsername { get; set; }
+            public string esPassword { get; set; }
+        }
+        private void LoadConfigVariables() => configData = Config.ReadObject<ConfigData>();
+
         // Called after the player object is created, but before the player has spawned
         void OnPlayerConnected(BasePlayer player) {
             try
@@ -92,10 +108,10 @@ namespace Oxide.Plugins
             string identity = ConVar.Server.identity;
             string suffix = getEsIndexSuffix();
             string esIndex = String.Format("{0}-{1}", identity, suffix);
-            string esHost = "";
-            string esPort = "";
-            string esUsername = "";
-            string esPassword = "";
+            string esHost = configData.esHost;
+            string esPort = configData.esPort;
+            string esUsername = configData.esUsername;
+            string esPassword = configData.esPassword;
             string esUri = String.Format("{0}:{1}/{2}",esHost,esPort,esIndex);
             string esAuth = String.Format("{0}:{1}", esUsername, esPassword);
 
