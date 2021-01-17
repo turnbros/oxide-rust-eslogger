@@ -121,6 +121,9 @@ namespace Oxide.Plugins
             }
             catch (Exception error)
             {
+                string identity = ConVar.Server.identity;
+                string suffix = getEsIndexSuffix();
+                string esIndex = String.Format("{0}-{1}", identity, suffix);
                 LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR {esIndex} - OnPlayerDeath - {error.StackTrace}", this);
             }
             return null;
