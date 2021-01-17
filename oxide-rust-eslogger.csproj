@@ -226,9 +226,6 @@
     <Reference Include="netstandard">
       <HintPath>external_libs\netstandard.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>external_libs\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="Novell.Directory.Ldap">
       <HintPath>external_libs\Novell.Directory.Ldap.dll</HintPath>
     </Reference>

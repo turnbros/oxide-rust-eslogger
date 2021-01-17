@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System;
-using UnityEngine;
 using Newtonsoft.Json;
 using UnityEngine.Networking;
 using System.Globalization;
@@ -8,7 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Oxide.Plugins
 {
-    [Info("OxideRustEsLogger", "RedSys", 2.3)]
+    [Info("OxideRustEsLogger", "RedSys", 2.4)]
     [Description("Logs player actions.")]
     class OxideRustEsLogger : RustPlugin
     {
@@ -104,7 +103,7 @@ namespace Oxide.Plugins
                 {
                     LogToFile("es_logger.log", $"info is null", this);
                 }
-                LogToFile("es_logger.log", $"{JsonConvert.SerializeObject(attacker.displayName)}", this);
+                LogToFile("es_logger_asdf.log", $"OnPlayerAttack - {JsonConvert.SerializeObject(attacker.displayName)}", this);
 
                 PlayerAttackEventLogEntry eventLogEntry = new PlayerAttackEventLogEntry(attacker, info);
                 string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
