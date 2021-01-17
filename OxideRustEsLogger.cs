@@ -8,7 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Oxide.Plugins
 {
-    [Info("OxideRustEsLogger", "RedSys", 2.0)]
+    [Info("OxideRustEsLogger", "RedSys", 2.1)]
     [Description("Logs player actions.")]
     class OxideRustEsLogger : RustPlugin
     {
@@ -150,6 +150,7 @@ namespace Oxide.Plugins
             string esAuth = String.Format("{0}:{1}", esUsername, esPassword);
 
             UnityWebRequest webRequest = UnityWebRequest.Post(esUri, logMsg);
+            LogToFile("es_logger.log", $"[{DateTime.Now}] INFO {webRequest.ToString()}", this);
             webRequest.SetRequestHeader("Content-Type", "application/json");
             webRequest.SetRequestHeader("Authorization", Base64Encode(esAuth));
             webRequest.certificateHandler = new AcceptPinnedCerts();
