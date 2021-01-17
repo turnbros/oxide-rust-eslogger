@@ -7,7 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Oxide.Plugins
 {
-    [Info("OxideRustEsLogger", "RedSys", 2.6)]
+    [Info("OxideRustEsLogger", "RedSys", 2.7)]
     [Description("Logs player actions.")]
     class OxideRustEsLogger : RustPlugin
     {
@@ -36,10 +36,7 @@ namespace Oxide.Plugins
             }
             catch (Exception error)
             {
-                string identity = ConVar.Server.identity;
-                string suffix = getEsIndexSuffix();
-                string esIndex = String.Format("{0}-{1}", identity, suffix);
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerConnected - {error.Message} - {error.StackTrace}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerConnected - {error.Message} - {error.StackTrace}", this);
             }
         }
 
@@ -53,10 +50,7 @@ namespace Oxide.Plugins
             }
             catch (Exception error)
             {
-                string identity = ConVar.Server.identity;
-                string suffix = getEsIndexSuffix();
-                string esIndex = String.Format("{0}-{1}", identity, suffix);
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerDisconnected - {error.Message} - {error.StackTrace}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerDisconnected - {error.Message} - {error.StackTrace}", this);
             }
         }
 
@@ -70,10 +64,7 @@ namespace Oxide.Plugins
             }
             catch (Exception error)
             {
-                string identity = ConVar.Server.identity;
-                string suffix = getEsIndexSuffix();
-                string esIndex = String.Format("{0}-{1}", identity, suffix);
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerChat - {error.Message} - {error.StackTrace}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerChat - {error.Message} - {error.StackTrace}", this);
             }
             return null;
         }
@@ -85,10 +76,7 @@ namespace Oxide.Plugins
                 string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
                 SendEventLog(eventLogEntryString);
             } catch (Exception error) {
-                string identity = ConVar.Server.identity;
-                string suffix = getEsIndexSuffix();
-                string esIndex = String.Format("{0}-{1}", identity, suffix);
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnLootPlayer - {error.Message} - {error.StackTrace}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnLootPlayer - {error.Message} - {error.StackTrace}", this);
             }
         }
 
@@ -111,10 +99,7 @@ namespace Oxide.Plugins
             }
             catch (Exception error)
             {
-                string identity = ConVar.Server.identity;
-                string suffix = getEsIndexSuffix();
-                string esIndex = String.Format("{0}-{1}", identity, suffix);
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerAttack - {error.Message} - {error.StackTrace}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerAttack - {error.Message} - {error.StackTrace}", this);
                 LogToFile("es_logger.log", error.StackTrace, this);
             }
         }
@@ -129,17 +114,14 @@ namespace Oxide.Plugins
             }
             catch (Exception error)
             {
-                string identity = ConVar.Server.identity;
-                string suffix = getEsIndexSuffix();
-                string esIndex = String.Format("{0}-{1}", identity, suffix);
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR {esIndex} - OnPlayerDeath - {error.Message} - {error.StackTrace}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerDeath - {error.Message} - {error.StackTrace}", this);
             }
             return null;
         }
 
         IEnumerator SendEventLog(string logMsg) {
 
-            LogToFile("es_logger.log", $"[{DateTime.Now}] INFO {logMsg}", this);
+            LogToFile("es_log_messages.log", logMsg, this);
 
             string identity = ConVar.Server.identity;
             string suffix = getEsIndexSuffix();
