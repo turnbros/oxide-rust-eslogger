@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using UnityEngine.Networking;
 using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
+using System.Diagnostics;
 
 namespace Oxide.Plugins
 {
@@ -37,7 +38,10 @@ namespace Oxide.Plugins
             }
             catch (Exception error)
             {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerConnected - {error.StackTrace}", this);
+                StackTrace currentStack = new StackTrace(1, true);
+                StackTrace exceptionStack = new StackTrace(error, true);
+                string fullStackMessage = exceptionStack.ToString() + currentStack.ToString();
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerConnected - {fullStackMessage}", this);
             }
         }
 
@@ -65,7 +69,10 @@ namespace Oxide.Plugins
             }
             catch (Exception error)
             {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerChat - {error.StackTrace}", this);
+                StackTrace currentStack = new StackTrace(1, true);
+                StackTrace exceptionStack = new StackTrace(error, true);
+                string fullStackMessage = exceptionStack.ToString() + currentStack.ToString();
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerChat - {fullStackMessage}", this);
             }
             return null;
         }
