@@ -37,7 +37,7 @@ namespace Oxide.Plugins
             }
             catch (Exception error)
             {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerConnected - {error.Message}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerConnected - {error.StackTrace}", this);
             }
         }
 
@@ -51,7 +51,7 @@ namespace Oxide.Plugins
             }
             catch (Exception error)
             {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerDisconnected - {error.Message}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerDisconnected - {error.StackTrace}", this);
             }
         }
 
@@ -66,6 +66,8 @@ namespace Oxide.Plugins
             catch (Exception error)
             {
                 LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerChat - {error.StackTrace}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - BasePlayer - {JsonConvert.SerializeObject(player)}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - Message - {message}", this);
             }
             return null;
         }
@@ -77,7 +79,9 @@ namespace Oxide.Plugins
                 string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
                 SendEventLog(eventLogEntryString);
             } catch (Exception error) {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnLootPlayer - {error.Message}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnLootPlayer - {error.StackTrace}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - BasePlayer - {JsonConvert.SerializeObject(player)}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - TargetPlayer - {JsonConvert.SerializeObject(target)}", this);
             }
         }
 
@@ -91,7 +95,7 @@ namespace Oxide.Plugins
             }
             catch (Exception error)
             {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerAttack - {error.Message}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerAttack - {error.StackTrace}", this);
                 LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - BasePlayer - {JsonConvert.SerializeObject(attacker)}", this);
                 LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - HitInfo - {JsonConvert.SerializeObject(info)}", this);
             }
@@ -107,7 +111,7 @@ namespace Oxide.Plugins
             }
             catch (Exception error)
             {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerDeath - {error.Message}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerDeath - {error.StackTrace}", this);
                 LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - BasePlayer - {JsonConvert.SerializeObject(player)}", this);
                 LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - HitInfo - {JsonConvert.SerializeObject(info)}", this);
             }
