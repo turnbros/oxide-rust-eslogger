@@ -8,7 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Oxide.Plugins
 {
-    [Info("OxideRustEsLogger", "RedSys", 1.6)]
+    [Info("OxideRustEsLogger", "RedSys", 1.7)]
     [Description("Logs player actions.")]
     class OxideRustEsLogger : RustPlugin
     {
@@ -232,6 +232,11 @@ namespace Oxide.Plugins
 
                 BasePlayer targetPlayer = info.HitEntity.GetComponent<BasePlayer>();
 
+                if (targetPlayer == null)
+                {
+                    return;
+                }
+
                 string playerAddress = targetPlayer.net.connection.ipaddress;
                 target_ip_address = playerAddress.Substring(0, playerAddress.LastIndexOf(":"));
                 target_steam_id = targetPlayer.userID;
@@ -241,7 +246,7 @@ namespace Oxide.Plugins
                 target_location_x = targetPlayer.transform.position.x;
                 target_location_y = targetPlayer.transform.position.y;
                 target_location_z = targetPlayer.transform.position.z;
-
+                    }
                 if (info != null)
                 {
                     hit_info_null = false;
