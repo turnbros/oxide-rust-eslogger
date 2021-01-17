@@ -7,7 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Oxide.Plugins
 {
-    [Info("OxideRustEsLogger", "RedSys", 2.9)]
+    [Info("OxideRustEsLogger", "RedSys", 3.0)]
     [Description("Logs player actions.")]
     class OxideRustEsLogger : RustPlugin
     {
@@ -32,7 +32,7 @@ namespace Oxide.Plugins
             {
                 PlayerBaseEventLogEntry eventLogEntry = new PlayerBaseEventLogEntry(player, "OnPlayerConnected");
                 string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
-                SendEventLog(eventLogEntryString);
+                LogToFile("on_player_connected.log", eventLogEntryString, this);
             }
             catch (Exception error)
             {
@@ -46,7 +46,7 @@ namespace Oxide.Plugins
             {
                 PlayerBaseEventLogEntry eventLogEntry = new PlayerBaseEventLogEntry(player, "OnPlayerDisconnected");
                 string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
-                SendEventLog(eventLogEntryString);
+                LogToFile("on_player_disconnected.log", eventLogEntryString, this);
             }
             catch (Exception error)
             {
@@ -61,7 +61,6 @@ namespace Oxide.Plugins
                 PlayerChatEventLogEntry eventLogEntry = new PlayerChatEventLogEntry(player, message);
                 string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
                 LogToFile("on_player_chat.log", eventLogEntryString, this);
-                SendEventLog(eventLogEntryString);
             }
             catch (Exception error)
             {
@@ -75,7 +74,7 @@ namespace Oxide.Plugins
             try {
                 PlayerLootEventLogEntry eventLogEntry = new PlayerLootEventLogEntry(player, target);
                 string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
-                SendEventLog(eventLogEntryString);
+                LogToFile("on_loot_player.log", eventLogEntryString, this);
             } catch (Exception error) {
                 LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnLootPlayer - {error.Message} - {error.StackTrace}", this);
             }
@@ -84,25 +83,13 @@ namespace Oxide.Plugins
         // Useful for modifying an attack before it goes out hitInfo.HitEntity should be the
         void OnPlayerAttack(BasePlayer attacker, HitInfo info) {
             try {
-                if(attacker == null)
-                {
-                    LogToFile("es_logger.log", $"Attacker is null", this);
-                }
-                if(info == null)
-                {
-                    LogToFile("es_logger.log", $"info is null", this);
-                }
-                LogToFile("es_logger_asdf.log", $"OnPlayerAttack - {JsonConvert.SerializeObject(attacker.displayName)}", this);
-
                 PlayerAttackEventLogEntry eventLogEntry = new PlayerAttackEventLogEntry(attacker, info);
                 string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
                 LogToFile("on_player_attack.log", eventLogEntryString, this);
-                SendEventLog(eventLogEntryString);
             }
             catch (Exception error)
             {
                 LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerAttack - {error.Message} - {error.StackTrace}", this);
-                LogToFile("es_logger.log", error.StackTrace, this);
             }
         }
 
@@ -112,53 +99,13 @@ namespace Oxide.Plugins
             {
                 PlayerBaseEventLogEntry eventLogEntry = new PlayerDeathEventLogEntry(player, info);
                 string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
-                SendEventLog(eventLogEntryString);
+                LogToFile("on_player_death.log", eventLogEntryString, this);
             }
             catch (Exception error)
             {
                 LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerDeath - {error.Message} - {error.StackTrace}", this);
             }
             return null;
-        }
-
-        IEnumerator SendEventLog(string logMsg) {
-
-            LogToFile("es_log_messages.log", logMsg, this);
-
-            string identity = ConVar.Server.identity;
-            string suffix = getEsIndexSuffix();
-            string esIndex = String.Format("{0}-{1}", identity, suffix);
-            string esHost = configData.esHost;
-            string esPort = configData.esPort;
-            string esUsername = configData.esUsername;
-            string esPassword = configData.esPassword;
-            string esUri = String.Format("{0}:{1}/{2}",esHost,esPort,esIndex);
-            string esAuth = String.Format("{0}:{1}", esUsername, esPassword);
-
-            UnityWebRequest webRequest = UnityWebRequest.Post(esUri, logMsg);
-            LogToFile("es_logger.log", $"[{DateTime.Now}] INFO {webRequest}", this);
-            webRequest.SetRequestHeader("Content-Type", "application/json");
-            webRequest.SetRequestHeader("Authorization", Base64Encode(esAuth));
-            webRequest.certificateHandler = new AcceptPinnedCerts();
-
-            yield return webRequest.SendWebRequest();
-            if (webRequest.isNetworkError || webRequest.isHttpError) {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR {webRequest.error}", this);
-            } else
-            {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] INFO {webRequest.responseCode}", this);
-            }
-            
-        }
-
-        public static string Base64Encode(string plainText) {
-            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
-            return Convert.ToBase64String(plainTextBytes);
-        }
-
-        string getEsIndexSuffix() {
-            DateTime dateTime = DateTime.UtcNow;
-            return String.Format("{0}-{1}", dateTime.Year, GetIso8601WeekOfYear(dateTime));
         }
 
         // Nabbed from: https://stackoverflow.com/questions/11154673/get-the-correct-week-number-of-a-given-date
