@@ -9,7 +9,7 @@ using System.Diagnostics;
 
 namespace Oxide.Plugins
 {
-    [Info("OxideRustEsLogger", "RedSys", 1.1)]
+    [Info("OxideRustEsLogger", "RedSys", 1.1.0)]
     [Description("Logs player actions.")]
     class OxideRustEsLogger : RustPlugin
     {
@@ -93,8 +93,7 @@ namespace Oxide.Plugins
 
         // Useful for modifying an attack before it goes out hitInfo.HitEntity should be the
         void OnPlayerAttack(BasePlayer attacker, HitInfo info) {
-            try
-            {
+            try {
                 PlayerAttackEventLogEntry eventLogEntry = new PlayerAttackEventLogEntry(attacker, info);
                 string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
                 SendEventLog(eventLogEntryString);
@@ -107,7 +106,7 @@ namespace Oxide.Plugins
                 StackTrace currentStack = new StackTrace(1, true);
                 StackTrace exceptionStack = new StackTrace(error, true);
                 string fullStackMessage = exceptionStack.ToString() + currentStack.ToString();
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerAttack - {error.StackTrace}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerAttack - {fullStackMessage}", this);
             }
         }
 
@@ -124,7 +123,10 @@ namespace Oxide.Plugins
                 string identity = ConVar.Server.identity;
                 string suffix = getEsIndexSuffix();
                 string esIndex = String.Format("{0}-{1}", identity, suffix);
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR {esIndex} - OnPlayerDeath - {error.StackTrace}", this);
+                StackTrace currentStack = new StackTrace(1, true);
+                StackTrace exceptionStack = new StackTrace(error, true);
+                string fullStackMessage = exceptionStack.ToString() + currentStack.ToString();
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR {esIndex} - OnPlayerDeath - {fullStackMessage}", this);
             }
             return null;
         }
