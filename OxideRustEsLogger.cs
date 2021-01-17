@@ -65,7 +65,7 @@ namespace Oxide.Plugins
             }
             catch (Exception error)
             {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerChat - {error.Message}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerChat - {error.StackTrace}", this);
             }
             return null;
         }
