@@ -8,7 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Oxide.Plugins
 {
-    [Info("OxideRustEsLogger", "RedSys", 2.2)]
+    [Info("OxideRustEsLogger", "RedSys", 2.3)]
     [Description("Logs player actions.")]
     class OxideRustEsLogger : RustPlugin
     {
@@ -240,20 +240,28 @@ namespace Oxide.Plugins
 
                 BasePlayer targetPlayer = info.HitEntity.GetComponent<BasePlayer>();
 
-                if (targetPlayer == null)
+                if (targetPlayer != null)
                 {
-                    return;
+                    string playerAddress = targetPlayer.net.connection.ipaddress;
+                    target_ip_address = playerAddress.Substring(0, playerAddress.LastIndexOf(":"));
+                    target_steam_id = targetPlayer.userID;
+                    target_name = targetPlayer.displayName;
+                    target_health = targetPlayer.health;
+                    target_heartrate = targetPlayer.metabolism.heartrate.lastValue;
+                    target_location_x = targetPlayer.transform.position.x;
+                    target_location_y = targetPlayer.transform.position.y;
+                    target_location_z = targetPlayer.transform.position.z;
+                } else
+                {
+                    target_ip_address = "";
+                    target_steam_id = 0;
+                    target_name = "";
+                    target_health = 0;
+                    target_heartrate = 0;
+                    target_location_x = 0;
+                    target_location_y = 0;
+                    target_location_z = 0;
                 }
-
-                string playerAddress = targetPlayer.net.connection.ipaddress;
-                target_ip_address = playerAddress.Substring(0, playerAddress.LastIndexOf(":"));
-                target_steam_id = targetPlayer.userID;
-                target_name = targetPlayer.displayName;
-                target_health = targetPlayer.health;
-                target_heartrate = targetPlayer.metabolism.heartrate.lastValue;
-                target_location_x = targetPlayer.transform.position.x;
-                target_location_y = targetPlayer.transform.position.y;
-                target_location_z = targetPlayer.transform.position.z;
                     
                 if (info != null)
                 {
