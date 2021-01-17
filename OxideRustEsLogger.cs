@@ -8,7 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Oxide.Plugins
 {
-    [Info("OxideRustEsLogger", "RedSys", 1.9)]
+    [Info("OxideRustEsLogger", "RedSys", 1.10)]
     [Description("Logs player actions.")]
     class OxideRustEsLogger : RustPlugin
     {
@@ -157,7 +157,11 @@ namespace Oxide.Plugins
             yield return webRequest.SendWebRequest();
             if (webRequest.isNetworkError || webRequest.isHttpError) {
                 LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR {webRequest.error}", this);
+            } else
+            {
+                LogToFile("es_logger.log", $"[{DateTime.Now}] INFO {webRequest.responseCode}", this);
             }
+            
         }
 
         public static string Base64Encode(string plainText) {
