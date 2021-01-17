@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System;
 using UnityEngine;
+using Newtonsoft.Json;
 using UnityEngine.Networking;
 using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
@@ -31,7 +32,7 @@ namespace Oxide.Plugins
             try
             {
                 PlayerBaseEventLogEntry eventLogEntry = new PlayerBaseEventLogEntry(player, "OnPlayerConnected");
-                string eventLogEntryString = JsonUtility.ToJson(eventLogEntry);
+                string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry); //JsonUtility.ToJson(eventLogEntry);
                 SendEventLog(eventLogEntryString);
             }
             catch (Exception error)
