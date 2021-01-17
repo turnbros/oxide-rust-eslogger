@@ -32,7 +32,7 @@ namespace Oxide.Plugins
             try
             {
                 PlayerBaseEventLogEntry eventLogEntry = new PlayerBaseEventLogEntry(player, "OnPlayerConnected");
-                string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry); //JsonUtility.ToJson(eventLogEntry);
+                string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
                 SendEventLog(eventLogEntryString);
             }
             catch (Exception error)
@@ -46,7 +46,7 @@ namespace Oxide.Plugins
             try
             {
                 PlayerBaseEventLogEntry eventLogEntry = new PlayerBaseEventLogEntry(player, "OnPlayerDisconnected");
-                string eventLogEntryString = JsonUtility.ToJson(eventLogEntry);
+                string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
                 SendEventLog(eventLogEntryString);
             }
             catch (Exception error)
@@ -60,7 +60,7 @@ namespace Oxide.Plugins
             try
             {
                 PlayerChatEventLogEntry eventLogEntry = new PlayerChatEventLogEntry(player, message);
-                string eventLogEntryString = JsonUtility.ToJson(eventLogEntry);
+                string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
                 SendEventLog(eventLogEntryString);
             }
             catch (Exception error)
@@ -74,7 +74,7 @@ namespace Oxide.Plugins
         void OnLootPlayer(BasePlayer player, BasePlayer target) {
             try {
                 PlayerLootEventLogEntry eventLogEntry = new PlayerLootEventLogEntry(player, target);
-                string eventLogEntryString = JsonUtility.ToJson(eventLogEntry);
+                string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
                 SendEventLog(eventLogEntryString);
             } catch (Exception error) {
                 LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnLootPlayer - {error.Message}", this);
@@ -86,7 +86,7 @@ namespace Oxide.Plugins
             try
             {
                 PlayerAttackEventLogEntry eventLogEntry = new PlayerAttackEventLogEntry(attacker, info);
-                string eventLogEntryString = JsonUtility.ToJson(eventLogEntry);
+                string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
                 SendEventLog(eventLogEntryString);
             }
             catch (Exception error)
@@ -100,7 +100,7 @@ namespace Oxide.Plugins
             try
             {
                 PlayerBaseEventLogEntry eventLogEntry = new PlayerDeathEventLogEntry(player, info);
-                string eventLogEntryString = JsonUtility.ToJson(eventLogEntry);
+                string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
                 SendEventLog(eventLogEntryString);
             }
             catch (Exception error)
