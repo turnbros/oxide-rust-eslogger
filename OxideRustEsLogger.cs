@@ -9,7 +9,7 @@ using static Facepunch.Report;
 
 namespace Oxide.Plugins
 {
-    [Info("OxideRustEsLogger", "RedSys", 1.3)]
+    [Info("OxideRustEsLogger", "RedSys", 1.4)]
     [Description("Logs player actions.")]
     class OxideRustEsLogger : RustPlugin
     {
