@@ -69,10 +69,13 @@ namespace Oxide.Plugins
             }
             catch (Exception error)
             {
+                string identity = ConVar.Server.identity;
+                string suffix = getEsIndexSuffix();
+                string esIndex = String.Format("{0}-{1}", identity, suffix);
                 StackTrace currentStack = new StackTrace(1, true);
                 StackTrace exceptionStack = new StackTrace(error, true);
                 string fullStackMessage = exceptionStack.ToString() + currentStack.ToString();
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerChat - {fullStackMessage}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerChat - {fullStackMessage}", this);
             }
             return null;
         }
@@ -98,7 +101,13 @@ namespace Oxide.Plugins
             }
             catch (Exception error)
             {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerAttack - {error.StackTrace}", this);
+                string identity = ConVar.Server.identity;
+                string suffix = getEsIndexSuffix();
+                string esIndex = String.Format("{0}-{1}", identity, suffix);
+                StackTrace currentStack = new StackTrace(1, true);
+                StackTrace exceptionStack = new StackTrace(error, true);
+                string fullStackMessage = exceptionStack.ToString() + currentStack.ToString();
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerAttack - {error.StackTrace}", this);
             }
         }
 
@@ -112,7 +121,7 @@ namespace Oxide.Plugins
             }
             catch (Exception error)
             {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerDeath - {error.StackTrace}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR {esIndex} - OnPlayerDeath - {error.StackTrace}", this);
             }
             return null;
         }
