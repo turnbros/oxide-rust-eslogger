@@ -9,7 +9,7 @@ using System.Diagnostics;
 
 namespace Oxide.Plugins
 {
-    [Info("OxideRustEsLogger", "RedSys", 1.1.0)]
+    [Info("OxideRustEsLogger", "RedSys", 1.2)]
     [Description("Logs player actions.")]
     class OxideRustEsLogger : RustPlugin
     {
