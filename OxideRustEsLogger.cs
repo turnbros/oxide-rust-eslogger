@@ -182,10 +182,10 @@ namespace Oxide.Plugins
                 } else
                 {
                     target_steam_id = 0;
-                    target_name = "";
-                    target_location_x = 0;
-                    target_location_y = 0;
-                    target_location_z = 0;
+                    target_name = info.HitEntity.name;
+                    target_location_x = info.HitEntity.transform.position.x;
+                    target_location_y = info.HitEntity.transform.position.y;
+                    target_location_z = info.HitEntity.transform.position.z;
                 }
 
                 if (info != null)
