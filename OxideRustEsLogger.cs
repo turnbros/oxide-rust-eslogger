@@ -7,7 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Oxide.Plugins
 {
-    [Info("OxideRustEsLogger", "RedSys", 2.5)]
+    [Info("OxideRustEsLogger", "RedSys", 2.6)]
     [Description("Logs player actions.")]
     class OxideRustEsLogger : RustPlugin
     {
@@ -203,9 +203,16 @@ namespace Oxide.Plugins
                 if (info != null)
                 {
                     hit_info_null = false;
-                    weapon_name = info.Weapon.name;
-                    did_gather = info.DidGather;
-                    is_projectile = info.IsProjectile();
+                    if(info.Weapon.name != null) {
+                        weapon_name = info.Weapon.name;
+                    }
+                    if (info.DidGather != null) {
+                        did_gather = info.DidGather;
+                    }
+                    if (info.IsProjectile() != null)
+                    {
+                        is_projectile = info.IsProjectile();
+                    }
                 }
                 else
                 {
@@ -249,13 +256,22 @@ namespace Oxide.Plugins
                     target_location_y = 0;
                     target_location_z = 0;
                 }
-                    
+
                 if (info != null)
                 {
                     hit_info_null = false;
-                    weapon_name = info.Weapon.name;
-                    did_gather = info.DidGather;
-                    is_projectile = info.IsProjectile();
+                    if (info.Weapon.name != null)
+                    {
+                        weapon_name = info.Weapon.name;
+                    }
+                    if (info.DidGather != null)
+                    {
+                        did_gather = info.DidGather;
+                    }
+                    if (info.IsProjectile() != null)
+                    {
+                        is_projectile = info.IsProjectile();
+                    }
                 }
                 else
                 {
