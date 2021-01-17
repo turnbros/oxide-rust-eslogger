@@ -8,7 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Oxide.Plugins
 {
-    [Info("OxideRustEsLogger", "RedSys", 1.10)]
+    [Info("OxideRustEsLogger", "RedSys", 2.0)]
     [Description("Logs player actions.")]
     class OxideRustEsLogger : RustPlugin
     {
