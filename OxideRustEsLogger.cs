@@ -8,7 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Oxide.Plugins
 {
-    [Info("OxideRustEsLogger", "RedSys", 1.5)]
+    [Info("OxideRustEsLogger", "RedSys", 1.6)]
     [Description("Logs player actions.")]
     class OxideRustEsLogger : RustPlugin
     {
@@ -96,6 +96,15 @@ namespace Oxide.Plugins
         // Useful for modifying an attack before it goes out hitInfo.HitEntity should be the
         void OnPlayerAttack(BasePlayer attacker, HitInfo info) {
             try {
+                if(attacker == null)
+                {
+                    LogToFile("es_logger.log", $"Attacker is null", this);
+                }
+                if(info == null)
+                {
+                    LogToFile("es_logger.log", $"info is null", this);
+
+                }
                 PlayerAttackEventLogEntry eventLogEntry = new PlayerAttackEventLogEntry(attacker, info);
                 string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
                 SendEventLog(eventLogEntryString);
