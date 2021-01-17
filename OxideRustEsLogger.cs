@@ -92,6 +92,8 @@ namespace Oxide.Plugins
             catch (Exception error)
             {
                 LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerAttack - {error.Message}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - BasePlayer - {JsonConvert.SerializeObject(attacker)}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - HitInfo - {JsonConvert.SerializeObject(info)}", this);
             }
         }
 
