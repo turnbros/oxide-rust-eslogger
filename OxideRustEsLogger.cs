@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using UnityEngine.Networking;
 using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
-using System.Diagnostics;
+using static Facepunch.Report;
 
 namespace Oxide.Plugins
 {
@@ -38,10 +38,10 @@ namespace Oxide.Plugins
             }
             catch (Exception error)
             {
-                StackTrace currentStack = new StackTrace(1, true);
-                StackTrace exceptionStack = new StackTrace(error, true);
-                string fullStackMessage = exceptionStack.ToString() + currentStack.ToString();
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerConnected - {fullStackMessage}", this);
+                string identity = ConVar.Server.identity;
+                string suffix = getEsIndexSuffix();
+                string esIndex = String.Format("{0}-{1}", identity, suffix);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerConnected - {error.StackTrace}", this);
             }
         }
 
@@ -55,7 +55,10 @@ namespace Oxide.Plugins
             }
             catch (Exception error)
             {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerDisconnected - {error.StackTrace}", this);
+                string identity = ConVar.Server.identity;
+                string suffix = getEsIndexSuffix();
+                string esIndex = String.Format("{0}-{1}", identity, suffix);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerDisconnected - {error.StackTrace}", this);
             }
         }
 
@@ -72,10 +75,7 @@ namespace Oxide.Plugins
                 string identity = ConVar.Server.identity;
                 string suffix = getEsIndexSuffix();
                 string esIndex = String.Format("{0}-{1}", identity, suffix);
-                StackTrace currentStack = new StackTrace(1, true);
-                StackTrace exceptionStack = new StackTrace(error, true);
-                string fullStackMessage = exceptionStack.ToString() + currentStack.ToString();
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerChat - {fullStackMessage}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerChat - {error.Message}", this);
             }
             return null;
         }
@@ -87,7 +87,10 @@ namespace Oxide.Plugins
                 string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
                 SendEventLog(eventLogEntryString);
             } catch (Exception error) {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnLootPlayer - {error.StackTrace}", this);
+                string identity = ConVar.Server.identity;
+                string suffix = getEsIndexSuffix();
+                string esIndex = String.Format("{0}-{1}", identity, suffix);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnLootPlayer - {error.StackTrace}", this);
             }
         }
 
@@ -103,10 +106,7 @@ namespace Oxide.Plugins
                 string identity = ConVar.Server.identity;
                 string suffix = getEsIndexSuffix();
                 string esIndex = String.Format("{0}-{1}", identity, suffix);
-                StackTrace currentStack = new StackTrace(1, true);
-                StackTrace exceptionStack = new StackTrace(error, true);
-                string fullStackMessage = exceptionStack.ToString() + currentStack.ToString();
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerAttack - {fullStackMessage}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerAttack - {error.StackTrace}", this);
             }
         }
 
@@ -123,10 +123,7 @@ namespace Oxide.Plugins
                 string identity = ConVar.Server.identity;
                 string suffix = getEsIndexSuffix();
                 string esIndex = String.Format("{0}-{1}", identity, suffix);
-                StackTrace currentStack = new StackTrace(1, true);
-                StackTrace exceptionStack = new StackTrace(error, true);
-                string fullStackMessage = exceptionStack.ToString() + currentStack.ToString();
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR {esIndex} - OnPlayerDeath - {fullStackMessage}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR {esIndex} - OnPlayerDeath - {error.StackTrace}", this);
             }
             return null;
         }
@@ -180,8 +177,6 @@ namespace Oxide.Plugins
         public string target_ip_address;
         public ulong target_steam_id;
         public string target_name;
-        public ulong target_team_id;
-        public string target_team_name;
         public float target_health;
         public float target_heartrate;
         public float target_location_x;
@@ -212,8 +207,6 @@ namespace Oxide.Plugins
         public string target_ip_address;
         public ulong target_steam_id;
         public string target_name;
-        public ulong target_team_id;
-        public string target_team_name;
         public float target_health;
         public float target_heartrate;
         public float target_location_x;
@@ -231,8 +224,6 @@ namespace Oxide.Plugins
             target_ip_address = playerAddress.Substring(0, playerAddress.LastIndexOf(":"));
             target_steam_id = targetPlayer.userID;
             target_name = targetPlayer.displayName;
-            target_team_id = targetPlayer.Team.teamID;
-            target_team_name = targetPlayer.Team.teamName;
             target_health = targetPlayer.health;
             target_heartrate = targetPlayer.metabolism.heartrate.lastValue;
             target_location_x = targetPlayer.transform.position.x;
@@ -259,8 +250,6 @@ namespace Oxide.Plugins
         public string target_ip_address;
         public ulong target_steam_id;
         public string target_name;
-        public ulong target_team_id;
-        public string target_team_name;
         public float target_health;
         public float target_heartrate;
         public float target_location_x;
@@ -274,8 +263,6 @@ namespace Oxide.Plugins
             target_ip_address = playerAddress.Substring(0, playerAddress.LastIndexOf(":"));
             target_steam_id = targetPlayer.userID;
             target_name = targetPlayer.displayName;
-            target_team_id = targetPlayer.Team.teamID;
-            target_team_name = targetPlayer.Team.teamName;
             target_health = targetPlayer.health;
             target_heartrate = targetPlayer.metabolism.heartrate.lastValue;
             target_location_x = targetPlayer.transform.position.x;
@@ -299,8 +286,6 @@ namespace Oxide.Plugins
         public string ip_address;
         public ulong steam_id;
         public string name;
-        public ulong team_id;
-        public string team_name;
         public float health;
         public float heartrate;
         public float location_x;
@@ -316,8 +301,6 @@ namespace Oxide.Plugins
             ip_address = playerAddress.Substring(0, playerAddress.LastIndexOf(":"));
             steam_id = player.userID;
             name = player.displayName;
-            team_id = player.Team.teamID;
-            team_name = player.Team.teamName;
             health = player.health;
             heartrate = player.metabolism.heartrate.lastValue;
             location_x = player.transform.position.x;
