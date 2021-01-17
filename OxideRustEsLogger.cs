@@ -7,7 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Oxide.Plugins
 {
-    [Info("OxideRustEsLogger", "RedSys", 2.4)]
+    [Info("OxideRustEsLogger", "RedSys", 2.5)]
     [Description("Logs player actions.")]
     class OxideRustEsLogger : RustPlugin
     {
@@ -189,11 +189,8 @@ namespace Oxide.Plugins
         [Serializable]
         public class PlayerDeathEventLogEntry : PlayerBaseEventLogEntry
         {
-            public string target_ip_address;
             public ulong target_steam_id;
             public string target_name;
-            public float target_health;
-            public float target_heartrate;
             public float target_location_x;
             public float target_location_y;
             public float target_location_z;
@@ -223,11 +220,8 @@ namespace Oxide.Plugins
         [Serializable]
         public class PlayerAttackEventLogEntry : PlayerBaseEventLogEntry
         {
-            public string target_ip_address;
             public ulong target_steam_id;
             public string target_name;
-            public float target_health;
-            public float target_heartrate;
             public float target_location_x;
             public float target_location_y;
             public float target_location_z;
@@ -242,22 +236,15 @@ namespace Oxide.Plugins
 
                 if (targetPlayer != null)
                 {
-                    string playerAddress = targetPlayer.net.connection.ipaddress;
-                    target_ip_address = playerAddress.Substring(0, playerAddress.LastIndexOf(":"));
                     target_steam_id = targetPlayer.userID;
                     target_name = targetPlayer.displayName;
-                    target_health = targetPlayer.health;
-                    target_heartrate = targetPlayer.metabolism.heartrate.lastValue;
                     target_location_x = targetPlayer.transform.position.x;
                     target_location_y = targetPlayer.transform.position.y;
                     target_location_z = targetPlayer.transform.position.z;
                 } else
                 {
-                    target_ip_address = "";
                     target_steam_id = 0;
                     target_name = "";
-                    target_health = 0;
-                    target_heartrate = 0;
                     target_location_x = 0;
                     target_location_y = 0;
                     target_location_z = 0;
@@ -283,26 +270,16 @@ namespace Oxide.Plugins
         [Serializable]
         public class PlayerLootEventLogEntry : PlayerBaseEventLogEntry
         {
-
-            public string target_ip_address;
             public ulong target_steam_id;
             public string target_name;
-            public float target_health;
-            public float target_heartrate;
             public float target_location_x;
             public float target_location_y;
             public float target_location_z;
 
             public PlayerLootEventLogEntry(BasePlayer player, BasePlayer targetPlayer) : base(player, "OnLootPlayer")
             {
-
-                string playerAddress = targetPlayer.net.connection.ipaddress;
-
-                target_ip_address = playerAddress.Substring(0, playerAddress.LastIndexOf(":"));
                 target_steam_id = targetPlayer.userID;
                 target_name = targetPlayer.displayName;
-                target_health = targetPlayer.health;
-                target_heartrate = targetPlayer.metabolism.heartrate.lastValue;
                 target_location_x = targetPlayer.transform.position.x;
                 target_location_y = targetPlayer.transform.position.y;
                 target_location_z = targetPlayer.transform.position.z;
@@ -324,11 +301,8 @@ namespace Oxide.Plugins
         {
             // We're using snake_case because this will be serialized to JSON.
             public int timestamp;
-            public string ip_address;
             public ulong steam_id;
             public string name;
-            public float health;
-            public float heartrate;
             public float location_x;
             public float location_y;
             public float location_z;
@@ -336,15 +310,9 @@ namespace Oxide.Plugins
 
             public PlayerBaseEventLogEntry(BasePlayer player, string hookName)
             {
-
-                string playerAddress = player.net.connection.ipaddress;
-
                 timestamp = getEpoch();
-                ip_address = playerAddress.Substring(0, playerAddress.LastIndexOf(":"));
                 steam_id = player.userID;
                 name = player.displayName;
-                health = player.health;
-                heartrate = player.metabolism.heartrate.lastValue;
                 location_x = player.transform.position.x;
                 location_y = player.transform.position.y;
                 location_z = player.transform.position.z;
