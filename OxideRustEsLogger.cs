@@ -41,7 +41,7 @@ namespace Oxide.Plugins
                 string identity = ConVar.Server.identity;
                 string suffix = getEsIndexSuffix();
                 string esIndex = String.Format("{0}-{1}", identity, suffix);
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerConnected - {error.StackTrace}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerConnected - {error.Message} - {error.StackTrace}", this);
             }
         }
 
@@ -58,7 +58,7 @@ namespace Oxide.Plugins
                 string identity = ConVar.Server.identity;
                 string suffix = getEsIndexSuffix();
                 string esIndex = String.Format("{0}-{1}", identity, suffix);
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerDisconnected - {error.StackTrace}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerDisconnected - {error.Message} - {error.StackTrace}", this);
             }
         }
 
@@ -75,7 +75,7 @@ namespace Oxide.Plugins
                 string identity = ConVar.Server.identity;
                 string suffix = getEsIndexSuffix();
                 string esIndex = String.Format("{0}-{1}", identity, suffix);
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerChat - {error.Message}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerChat - {error.Message} - {error.StackTrace}", this);
             }
             return null;
         }
@@ -90,7 +90,7 @@ namespace Oxide.Plugins
                 string identity = ConVar.Server.identity;
                 string suffix = getEsIndexSuffix();
                 string esIndex = String.Format("{0}-{1}", identity, suffix);
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnLootPlayer - {error.StackTrace}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnLootPlayer - {error.Message} - {error.StackTrace}", this);
             }
         }
 
@@ -106,7 +106,7 @@ namespace Oxide.Plugins
                 string identity = ConVar.Server.identity;
                 string suffix = getEsIndexSuffix();
                 string esIndex = String.Format("{0}-{1}", identity, suffix);
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerAttack - {error.StackTrace}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerAttack - {error.Message} - {error.StackTrace}", this);
             }
         }
 
@@ -123,7 +123,7 @@ namespace Oxide.Plugins
                 string identity = ConVar.Server.identity;
                 string suffix = getEsIndexSuffix();
                 string esIndex = String.Format("{0}-{1}", identity, suffix);
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR {esIndex} - OnPlayerDeath - {error.StackTrace}", this);
+                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR {esIndex} - OnPlayerDeath - {error.Message} - {error.StackTrace}", this);
             }
             return null;
         }
