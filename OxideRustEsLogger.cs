@@ -8,7 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Oxide.Plugins
 {
-    [Info("OxideRustEsLogger", "RedSys", 1.8)]
+    [Info("OxideRustEsLogger", "RedSys", 1.9)]
     [Description("Logs player actions.")]
     class OxideRustEsLogger : RustPlugin
     {
@@ -104,7 +104,7 @@ namespace Oxide.Plugins
                 {
                     LogToFile("es_logger.log", $"info is null", this);
                 }
-                LogToFile("es_logger.log", $"{JsonConvert.SerializeObject(attacker)}", this);
+                LogToFile("es_logger.log", $"{JsonConvert.SerializeObject(attacker.displayName)}", this);
 
                 PlayerAttackEventLogEntry eventLogEntry = new PlayerAttackEventLogEntry(attacker, info);
                 string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
