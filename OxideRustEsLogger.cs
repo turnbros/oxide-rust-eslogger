@@ -115,6 +115,7 @@ namespace Oxide.Plugins
                 string suffix = getEsIndexSuffix();
                 string esIndex = String.Format("{0}-{1}", identity, suffix);
                 LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - {esIndex} - OnPlayerAttack - {error.Message} - {error.StackTrace}", this);
+                LogToFile("es_logger.log", error.StackTrace, this);
             }
         }
 
