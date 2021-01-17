@@ -247,7 +247,7 @@ namespace Oxide.Plugins
                 target_location_x = targetPlayer.transform.position.x;
                 target_location_y = targetPlayer.transform.position.y;
                 target_location_z = targetPlayer.transform.position.z;
-                    }
+                    
                 if (info != null)
                 {
                     hit_info_null = false;
