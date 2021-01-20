@@ -172,7 +172,7 @@ namespace Oxide.Plugins
 
                 owner_id = entity.OwnerID;
                 name = entity.name;
-                type = entity.GetType().Name;
+                type = entity.GetType()?.Name;
                 if (type == null) type = "unknown";
 
                 prefab_id = entity.prefabID;
