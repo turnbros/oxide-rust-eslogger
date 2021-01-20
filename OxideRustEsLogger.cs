@@ -1,301 +1,311 @@
-﻿using System.Collections;
-using System;
+﻿using System;
 using Newtonsoft.Json;
-using UnityEngine.Networking;
-using System.Globalization;
-using System.Security.Cryptography.X509Certificates;
+using ConVar;
 
 namespace Oxide.Plugins
 {
-    [Info("OxideRustEsLogger", "RedSys", 3.0)]
+    [Info("OxideRustEsLogger", "RedSys", 3.6)]
     [Description("Logs player actions.")]
     class OxideRustEsLogger : RustPlugin
     {
 
-        private void LoadVariables()
-        {
-            LoadConfigVariables();
-        }
-
-        private ConfigData configData;
-        class ConfigData {
-            public string esHost { get; set; }
-            public string esPort { get; set; }
-            public string esUsername { get; set; }
-            public string esPassword { get; set; }
-        }
-        private void LoadConfigVariables() => configData = Config.ReadObject<ConfigData>();
-
-        // Called after the player object is created, but before the player has spawned
-        void OnPlayerConnected(BasePlayer player) {
-            try
-            {
-                PlayerBaseEventLogEntry eventLogEntry = new PlayerBaseEventLogEntry(player, "OnPlayerConnected");
-                string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
-                LogToFile("on_player_connected.log", eventLogEntryString, this);
-            }
-            catch (Exception error)
-            {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerConnected - {error.Message} - {error.StackTrace}", this);
-            }
-        }
-
-        //  Called after the player has disconnected from the server
-        void OnPlayerDisconnected(BasePlayer player, string reason) {
-            try
-            {
-                PlayerBaseEventLogEntry eventLogEntry = new PlayerBaseEventLogEntry(player, "OnPlayerDisconnected");
-                string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
-                LogToFile("on_player_disconnected.log", eventLogEntryString, this);
-            }
-            catch (Exception error)
-            {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerDisconnected - {error.Message} - {error.StackTrace}", this);
-            }
-        }
-
-        // Called when the player sends chat to the server
-        object OnPlayerChat(BasePlayer player, string message, ConVar.Chat.ChatChannel channel) {
-            try
-            {
-                PlayerChatEventLogEntry eventLogEntry = new PlayerChatEventLogEntry(player, message);
-                string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
-                LogToFile("on_player_chat.log", eventLogEntryString, this);
-            }
-            catch (Exception error)
-            {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerChat - {error.Message} - {error.StackTrace}", this);
-            }
-            return null;
-        }
-
-        // Called when the player starts looting another player
-        void OnLootPlayer(BasePlayer player, BasePlayer target) {
+        void CreateLogEntry(string fileName, object eventObject) {
             try {
-                PlayerLootEventLogEntry eventLogEntry = new PlayerLootEventLogEntry(player, target);
-                string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
-                LogToFile("on_loot_player.log", eventLogEntryString, this);
+                LogToFile(fileName, JsonConvert.SerializeObject(eventObject), this);
             } catch (Exception error) {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnLootPlayer - {error.Message} - {error.StackTrace}", this);
+                LogToFile("error.log", $"[{DateTime.Now}] ERROR - {error.Message} - {error.StackTrace}", this);
             }
         }
 
+        /******************************************************
+         ** Multi Resident Event Serializable Object Classes **
+         ******************************************************/
+
+
+        // On Player Attack
         // Useful for modifying an attack before it goes out hitInfo.HitEntity should be the
-        void OnPlayerAttack(BasePlayer attacker, HitInfo info) {
-            try {
-                PlayerAttackEventLogEntry eventLogEntry = new PlayerAttackEventLogEntry(attacker, info);
-                string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
-                LogToFile("on_player_attack.log", eventLogEntryString, this);
-            }
-            catch (Exception error)
+        void OnPlayerAttack(BasePlayer attacker, HitInfo info)
+        {
+            CreateLogEntry("on_player_attack.log", new ResidentAttack(attacker, info));
+        }
+        [Serializable]
+        public class ResidentAttack : BaseEventLogEntry
+        {
+            public AggressiveAction aggressive_act;
+            public ResidentAttack(BasePlayer player, HitInfo info) : base("OnPlayerAttack", player)
             {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerAttack - {error.Message} - {error.StackTrace}", this);
+                aggressive_act = new AggressiveAction(info);
             }
         }
 
+
+        // On Player Death
         // Called when the player is about to die. HitInfo may be null sometimes
-        object OnPlayerDeath(BasePlayer player, HitInfo info) {
-            try
-            {
-                PlayerBaseEventLogEntry eventLogEntry = new PlayerDeathEventLogEntry(player, info);
-                string eventLogEntryString = JsonConvert.SerializeObject(eventLogEntry);
-                LogToFile("on_player_death.log", eventLogEntryString, this);
-            }
-            catch (Exception error)
-            {
-                LogToFile("es_logger.log", $"[{DateTime.Now}] ERROR - OnPlayerDeath - {error.Message} - {error.StackTrace}", this);
-            }
+        object OnPlayerDeath(BasePlayer player, HitInfo info)
+        {
+            CreateLogEntry("on_player_death.log", new ResidentDead(player, info));
             return null;
         }
-
-        // Nabbed from: https://stackoverflow.com/questions/11154673/get-the-correct-week-number-of-a-given-date
-        public static int GetIso8601WeekOfYear(DateTime time) {
-            DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
-            if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday) {
-                time = time.AddDays(3);
-            }
-            return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
-        }
-
         [Serializable]
-        public class PlayerDeathEventLogEntry : PlayerBaseEventLogEntry
+        public class ResidentDead : BaseEventLogEntry
         {
-            public ulong target_steam_id;
-            public string target_name;
-            public float target_location_x;
-            public float target_location_y;
-            public float target_location_z;
-            public bool hit_info_null;
-            public string weapon_name;
-            public bool did_gather;
-            public bool is_projectile;
-            public PlayerDeathEventLogEntry(BasePlayer player, HitInfo info) : base(player, "OnPlayerDeath")
+            public AggressiveAction aggressive_act;
+            public ResidentDead(BasePlayer player, HitInfo info) : base("OnPlayerDeath", player)
             {
-                if (info != null)
-                {
-                    hit_info_null = false;
-                    if(info.Weapon.name != null) {
-                        weapon_name = info.Weapon.name;
-                    }
-                    if (info.DidGather != null) {
-                        did_gather = info.DidGather;
-                    }
-                    if (info.IsProjectile() != null)
-                    {
-                        is_projectile = info.IsProjectile();
-                    }
-                }
-                else
-                {
-                    hit_info_null = true;
-                    weapon_name = "";
-                    did_gather = false;
-                    is_projectile = false;
-                }
+                aggressive_act = new AggressiveAction(info);
             }
         }
 
-        [Serializable]
-        public class PlayerAttackEventLogEntry : PlayerBaseEventLogEntry
+
+        // On Loot Player
+        // Called when the player starts looting another player
+        void OnLootPlayer(BasePlayer player, BasePlayer target)
         {
-            public ulong target_steam_id;
-            public string target_name;
-            public float target_location_x;
-            public float target_location_y;
-            public float target_location_z;
-            public bool hit_info_null;
-            public string weapon_name;
-            public bool did_gather;
-            public bool is_projectile;
-            public PlayerAttackEventLogEntry(BasePlayer player, HitInfo info) : base(player, "OnPlayerAttack")
-            {
-
-                BasePlayer targetPlayer = info.HitEntity.GetComponent<BasePlayer>();
-
-                if (targetPlayer != null)
-                {
-                    target_steam_id = targetPlayer.userID;
-                    target_name = targetPlayer.displayName;
-                    target_location_x = targetPlayer.transform.position.x;
-                    target_location_y = targetPlayer.transform.position.y;
-                    target_location_z = targetPlayer.transform.position.z;
-                } else
-                {
-                    target_steam_id = 0;
-                    target_name = info.HitEntity.name;
-                    target_location_x = info.HitEntity.transform.position.x;
-                    target_location_y = info.HitEntity.transform.position.y;
-                    target_location_z = info.HitEntity.transform.position.z;
-                }
-
-                if (info != null)
-                {
-                    hit_info_null = false;
-                    if (info.Weapon.name != null)
-                    {
-                        weapon_name = info.Weapon.name;
-                    }
-                    if (info.DidGather != null)
-                    {
-                        did_gather = info.DidGather;
-                    }
-                    if (info.IsProjectile() != null)
-                    {
-                        is_projectile = info.IsProjectile();
-                    }
-                }
-                else
-                {
-                    hit_info_null = true;
-                    weapon_name = "";
-                    did_gather = false;
-                    is_projectile = false;
-                }
-            }
+            CreateLogEntry("on_player_death.log", new ResidentLooted(player, target));
         }
-
         [Serializable]
-        public class PlayerLootEventLogEntry : PlayerBaseEventLogEntry
+        public class ResidentLooted : BaseEventLogEntry
         {
-            public ulong target_steam_id;
-            public string target_name;
-            public float target_location_x;
-            public float target_location_y;
-            public float target_location_z;
-
-            public PlayerLootEventLogEntry(BasePlayer player, BasePlayer targetPlayer) : base(player, "OnLootPlayer")
+            public Resident looted_resident;
+            public ResidentLooted(BasePlayer player, BasePlayer target) : base("OnLootPlayer", player)
             {
-                target_steam_id = targetPlayer.userID;
-                target_name = targetPlayer.displayName;
-                target_location_x = targetPlayer.transform.position.x;
-                target_location_y = targetPlayer.transform.position.y;
-                target_location_z = targetPlayer.transform.position.z;
+                looted_resident = new Resident(target);
             }
         }
 
+
+        /*******************************************************
+         ** Single Resident Event Serializable Object Classes **
+         *******************************************************/
+
+
+        // On Player Connected
+        // Called after the player object is created, but before the player has spawned
+        void OnPlayerConnected(BasePlayer player)
+        {
+            CreateLogEntry("on_player_connect.log", new ResidentConnected(player));
+        }
         [Serializable]
-        public class PlayerChatEventLogEntry : PlayerBaseEventLogEntry
+        public class ResidentConnected : BaseEventLogEntry
+        {
+            public ResidentConnected(BasePlayer player) : base("OnPlayerConnected", player){}
+        }
+
+
+        // On Player Disconnected
+        // Called after the player has disconnected from the server
+        void OnPlayerDisconnected(BasePlayer player, string reason)
+        {
+            CreateLogEntry("on_player_disconnect.log", new ResidentDisconnected(player, reason));
+        }
+        [Serializable]
+        public class ResidentDisconnected : BaseEventLogEntry
+        {
+            public string reason;
+            public ResidentDisconnected(BasePlayer player, string reason) : base("OnPlayerDisconnected", player)
+            {
+                this.reason = reason;
+            }
+        }
+
+
+        // On Player Chat
+        // Called when the player sends chat to the server
+        object OnPlayerChat(BasePlayer player, string message, Chat.ChatChannel channel)
+        {
+            CreateLogEntry("on_player_chat.log", new ResidentChatMessage(player, message, channel.ToString()));
+            return null;
+        }
+        [Serializable]
+        public class ResidentChatMessage : BaseEventLogEntry
         {
             public string message;
-            public PlayerChatEventLogEntry(BasePlayer player, string message) : base(player, "OnPlayerChat")
+            public string channel;
+            public ResidentChatMessage(BasePlayer player, string message, string channel) : base("OnPlayerChat", player)
             {
                 this.message = message;
+                this.channel = channel;
+            }
+        }
+
+
+        /*****************************************
+         ** Generic Serializable Object Classes **
+         *****************************************/
+
+        [Serializable]
+        public class BaseEventLogEntry {
+            public int timestamp;
+            public int log_format_version = 1;
+            public string event_name;
+            public Resident resident_subject;
+
+            public BaseEventLogEntry(string hook_name, BasePlayer player)
+            {
+                TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
+                timestamp = (int)t.TotalSeconds;
+                event_name = hook_name;
+                resident_subject = new Resident(player);
             }
         }
 
         [Serializable]
-        public class PlayerBaseEventLogEntry
+        public class Entity
         {
-            // We're using snake_case because this will be serialized to JSON.
-            public int timestamp;
-            public ulong steam_id;
-            public string name;
-            public float location_x;
-            public float location_y;
-            public float location_z;
-            public string hook_name;
+            // Name and ID stuff
+            public ulong owner_id = 0;
+            public string name = "unknown";
+            public string type = "unknown";
 
-            public PlayerBaseEventLogEntry(BasePlayer player, string hookName)
+            // Prefab Info
+            public uint prefab_id = 0;
+            public string prefab_name = "unknown";
+            public string prefab_path = "unknown";
+
+            public bool is_npc = true;
+            public EntityLocation location = new EntityLocation();
+
+            public Entity() { }
+            public Entity(BaseEntity entity)
             {
-                timestamp = getEpoch();
-                steam_id = player.userID;
+                if (entity == null) return;
+
+                owner_id = entity.OwnerID;
+                name = entity.name;
+                type = entity.GetType().Name;
+                if (type == null) type = "unknown";
+
+                prefab_id = entity.prefabID;
+                prefab_name = entity.ShortPrefabName;
+                prefab_path = entity.PrefabName;
+
+                location = new EntityLocation(entity.transform);
+                is_npc = entity.IsNpc;
+            }
+        }
+
+        [Serializable]
+        public class Resident : Entity {
+            public ulong user_id = 0;
+            public float health = 0;
+            public float heart_rate = 0;
+            public bool is_building_authed = false;
+            public bool is_building_blocked = false;
+            public ResidentTeamMembership team = new ResidentTeamMembership();
+
+            public Resident() {}
+            public Resident(BasePlayer player) : base(player.GetEntity()) {
+                if (player == null) return;
+
+                user_id = player.userID;
                 name = player.displayName;
-                location_x = player.transform.position.x;
-                location_y = player.transform.position.y;
-                location_z = player.transform.position.z;
-                hook_name = hookName;
-            }
+                prefab_path = player.PrefabName;
+                prefab_id = player.prefabID;
+                prefab_name = player.ShortPrefabName;
+                is_npc = player.IsNpc;
+                health = player.health;
 
-            int getEpoch()
-            {
-                TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
-                return (int)t.TotalSeconds;
+                is_building_authed = player.IsBuildingAuthed();
+                is_building_blocked = player.IsBuildingBlocked();
+                team = new ResidentTeamMembership(player.Team);
+                location = new EntityLocation(player.transform);
+
+                if (player.metabolism != null)
+                    if (player.metabolism.heartrate != null)
+                            heart_rate = player.metabolism.heartrate.value;
             }
         }
 
-        // Based on https://www.owasp.org/index.php/Certificate_and_Public_Key_Pinning#.Net
-        class AcceptPinnedCerts : CertificateHandler
+        
+
+        [Serializable]
+        public class AggressiveAction
         {
-            // Encoded RSAPublicKey
-            private static string PUB_KEY = "30818902818100C4A06B7B52F8D17DC1CCB47362" +
-                "C64AB799AAE19E245A7559E9CEEC7D8AA4DF07CB0B21FDFD763C63A313A668FE9D764E" +
-                "D913C51A676788DB62AF624F422C2F112C1316922AA5D37823CD9F43D1FC54513D14B2" +
-                "9E36991F08A042C42EAAEEE5FE8E2CB10167174A359CEBF6FACC2C9CA933AD403137EE" +
-                "2C3F4CBED9460129C72B0203010001";
+            public Entity aggression_target = new Entity();
+            public Entity aggression_initiator = new Entity();
+            public string weapon_name = "unknown";
+            public string weapon_prefab = "unknown";
+            public string material_name = "unknown";
+            public bool did_gather = false;
+            public bool did_hit = false;
+            public bool is_projectile = false;
+            public bool is_headshot = false;
 
-            protected override bool ValidateCertificate(byte[] certificateData)
+            public AggressiveAction() { }
+            public AggressiveAction(HitInfo info)
             {
-                return true;
+                if (info == null) return; 
 
-                X509Certificate2 certificate = new X509Certificate2(certificateData);
-                string pk = certificate.GetPublicKeyString();
-                if (pk.Equals(PUB_KEY))
-                    return true;
+                // Get the source of the aggression
+                if (info.Initiator != null)
+                {
+                    if (info.InitiatorPlayer != null)
+                        aggression_initiator = new Resident(info.InitiatorPlayer);
+                    else
+                        aggression_initiator = new Entity(info.Initiator);
+                }
 
-                // Bad dog
-                return false;
+
+                // Get the target of the agression
+                BasePlayer player = info.HitEntity.GetComponent<BasePlayer>();
+                if (player != null)
+                    aggression_target = new Resident(player);
+                else if(info.HitEntity != null)
+                    aggression_target = new Entity(info.HitEntity);
+
+
+                if (info.Weapon?.ShortPrefabName != null)
+                {
+                    weapon_name = info.Weapon.ShortPrefabName;
+                    weapon_prefab = info.Weapon.PrefabName;
+                }
+
+                if (info.material != null)
+                    material_name = info.material.name;
+
+                did_gather = info.DidGather;
+                is_projectile = info.IsProjectile();
+                is_headshot = info.isHeadshot;
             }
         }
 
+        [Serializable]
+        public class ResidentTeamMembership
+        {
+            public ulong id = 0;
+            public string name = "unknown";
+            public ulong leader = 0;
+            public float start_time = 0;
+            public float lifetime = 0;
+
+            public ResidentTeamMembership(){}
+            public ResidentTeamMembership(RelationshipManager.PlayerTeam team) {
+                if (team == null) return;
+
+                id = team.teamID;
+                name = team.teamName;
+                leader = team.teamLeader;
+                start_time = team.teamStartTime;
+                lifetime = team.teamLifetime;
+            }
+
+        }
+
+        [Serializable]
+        public class EntityLocation
+        {
+            public float x = 0;
+            public float y = 0;
+            public float z = 0;
+
+            public EntityLocation(){}
+            public EntityLocation(UnityEngine.Transform entityTransform) {
+                if (entityTransform == null) return;
+
+                x = entityTransform.position.x;
+                y = entityTransform.position.y;
+                z = entityTransform.position.z;
+            }
+        }
     }
 }
