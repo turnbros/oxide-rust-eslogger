@@ -6,7 +6,7 @@ using System;
 
 namespace Oxide.Plugins
 {
-    [Info("RustEventResident", "RedSys", 1.0)]
+    [Info("RustEventResident", "RedSys", 1.1)]
     class RustEventResident : RustPlugin
     {
         [Serializable]

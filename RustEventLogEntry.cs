@@ -8,7 +8,7 @@ using System;
 
 namespace Oxide.Plugins
 {
-    [Info("RustEventLogEntry", "RedSys", 1.0)]
+    [Info("RustEventLogEntry", "RedSys", 1.1)]
     class RustEventLogEntry : RustPlugin
     {
         [Serializable]

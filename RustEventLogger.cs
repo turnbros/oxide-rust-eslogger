@@ -16,7 +16,7 @@ using System.Linq;
 
 namespace Oxide.Plugins
 {
-    [Info("RustEventLogger", "RedSys", 1.0)]
+    [Info("RustEventLogger", "RedSys", 1.1)]
     [Description("Logs Rust events")]
     class RustEventLogger : RustPlugin
     {
