@@ -25,14 +25,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="RustEventLogger.cs" />
-    <Compile Include="RustEventEntity.cs" />
-    <Compile Include="RustEventResident.cs" />
-    <Compile Include="RustEventLogEntry.cs" />
-    <Compile Include="RustEventResidentAction.cs" />
-    <Compile Include="RustEventServer.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\Downloads\RustDedicated_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
@@ -528,6 +520,14 @@
     <Reference Include="UnityEngine.XRModule">
       <HintPath>external_libs\UnityEngine.XRModule.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="01-RustEventEntity.cs" />
+    <Compile Include="02-RustEventServer.cs" />
+    <Compile Include="03-RustEventResident.cs" />
+    <Compile Include="04-RustEventLogEntry.cs" />
+    <Compile Include="05-RustEventLogger.cs" />
+    <Compile Include="06-RustEventResidentAction.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

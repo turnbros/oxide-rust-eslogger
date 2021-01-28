@@ -1,15 +1,5 @@
 ﻿using System;
 
-// Requires: RustEventResident
-// Requires: RustEventResidentAction
-// Requires: RustEventServer
-
-/*
-  04 RustEventResident - Unloaded
-  05 RustEventResidentAction - Unloaded
-  06 RustEventServer - Unloade
- */
-
 namespace Oxide.Plugins
 {
     [Info("RustEventEntity", "RedSys", 2.0)]
