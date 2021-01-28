@@ -13,7 +13,7 @@ namespace Oxide.Plugins
 {
     [Info("RustEventLogger", "RedSys", 1.0)]
     [Description("Logs Rust events")]
-    class RustEsLogger : RustPlugin
+    class RustEventLogger : RustPlugin
     {
 
         void CreateLogEntry(string fileName, object eventObject) {
