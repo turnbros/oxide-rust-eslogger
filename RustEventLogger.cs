@@ -1,7 +1,8 @@
-﻿// Requires: RustEventLogEntry
+﻿// Requires: RustEventEntity
+// Requires: RustEventLogEntry
 // Requires: RustEventResident
-// Requires: RustEventServer
 // Requires: RustEventResidentAction
+// Requires: RustEventServer
 
 using System;
 using Newtonsoft.Json;

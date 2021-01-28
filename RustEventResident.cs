@@ -1,8 +1,4 @@
-﻿// Requires: RustEventEntity
-
-using System;
-
-// using static Oxide.Plugins.RustEventEntity;
+﻿using System;
 
 namespace Oxide.Plugins
 {
