@@ -25,7 +25,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="OxideRustEsLogger.cs" />
+    <Compile Include="RustEventLogger.cs" />
+    <Compile Include="RustEventEntity.cs" />
+    <Compile Include="RustEventResident.cs" />
+    <Compile Include="RustEventLogEntry.cs" />
+    <Compile Include="RustEventResidentAction.cs" />
+    <Compile Include="RustEventServer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
