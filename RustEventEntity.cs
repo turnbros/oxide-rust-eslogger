@@ -2,8 +2,6 @@
 
 namespace Oxide.Plugins
 {
-    [Info("RustEventEntity", "RedSys", 1.0)]
-    [Description("A helper class for the RustEventLogger")]
     class RustEventEntity : RustPlugin
     {
         [Serializable]

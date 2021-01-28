@@ -7,7 +7,6 @@ namespace Oxide.Plugins
 {
     class RustEventResidentAction : RustPlugin
     {
-
         [Serializable]
         public class GatheredItemAction
         {
