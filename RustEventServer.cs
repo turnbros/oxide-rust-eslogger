@@ -2,16 +2,27 @@
 
 namespace Oxide.Plugins
 {
-    [Info("RustEventServerState", "RedSys", 1.0)]
-    [Description("A helper class for the RustEventLogger")]
-    class RustEventServerState : RustPlugin
+    class RustEventServer : RustPlugin
     {
         [Serializable]
         public class ResidentConnectionEvent
         {
             public bool is_connected = false;
-            public string connection_event_reason = "disconnected";
+            public string event_name = "unknown";
+            public string event_reason = "unknown";
+            public ResidentConnectionEvent() { }
+            public ResidentConnectionEvent(bool isConnected, string eventReason) {
+
+                is_connected = isConnected;
+                event_reason = eventReason;
+
+                if (isConnected)
+                    event_name = "connected";
+                else
+                    event_name = "disconnected";
+            }
         }
+
         [Serializable]
         public class ChatMessage
         {

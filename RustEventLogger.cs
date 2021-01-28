@@ -6,7 +6,7 @@ using System.Linq;
 
 using static Oxide.Plugins.RustEventLogEntry;
 using static Oxide.Plugins.RustEventResident;
-using static Oxide.Plugins.RustEventServerState;
+using static Oxide.Plugins.RustEventServer;
 using static Oxide.Plugins.RustEventResidentAction;
 
 namespace Oxide.Plugins
@@ -63,9 +63,8 @@ namespace Oxide.Plugins
         }
 
         /******************************************************
-            ** Multi Resident Event Serializable Object Classes **
-            ******************************************************/
-
+         ** Multi Resident Event Serializable Object Classes **
+         ******************************************************/
 
         // On Player Attack
         // Useful for modifying an attack before it goes out hitInfo.HitEntity should be the
@@ -123,42 +122,38 @@ namespace Oxide.Plugins
 
 
         /*******************************************************
-            ** Single Resident Event Serializable Object Classes **
-            *******************************************************/
+         ** Single Resident Event Serializable Object Classes **
+         *******************************************************/
 
 
         // On Player Connected
         // Called after the player object is created, but before the player has spawned
-        void OnPlayerConnected(BasePlayer player)
-        {
+        void OnPlayerConnected(BasePlayer player) {
             CreateLogEntry("on_player_connect.log", new ResidentConnected(player));
         }
         [Serializable]
-        public class ResidentConnected : EntityEventLogEntry
-        {
-            public ResidentConnected(BasePlayer player) : base("OnPlayerConnected", player){}
+        public class ResidentConnected : EntityEventLogEntry {
+            public ResidentConnectionEvent connection_event = new ResidentConnectionEvent();
+            public ResidentConnected(BasePlayer player) : base("OnPlayerConnected", player) {
+                connection_event = new ResidentConnectionEvent(true, "connected");
+            }
         }
 
 
         // On Player Disconnected
         // Called after the player has disconnected from the server
-        void OnPlayerDisconnected(BasePlayer player, string reason)
-        {
+        void OnPlayerDisconnected(BasePlayer player, string reason) {
             CreateLogEntry("on_player_disconnect.log", new ResidentDisconnected(player, reason));
         }
         [Serializable]
-        public class ResidentDisconnected : EntityEventLogEntry
-        {
-            public string reason;
+        public class ResidentDisconnected : EntityEventLogEntry {
             public ResidentConnectionEvent connection_event = new ResidentConnectionEvent();
-            public ResidentDisconnected(BasePlayer player, string reason) : base("OnPlayerDisconnected", player)
-            {
-                    
-                this.reason = reason;
+            public ResidentDisconnected(BasePlayer player, string reason) : base("OnPlayerDisconnected", player) {
+                connection_event = new ResidentConnectionEvent(false, reason);
             }
         }
 
-        
+
         // On Player Chat
         // Called when the player sends chat to the server
         object OnPlayerChat(BasePlayer player, string message, Chat.ChatChannel channel)
