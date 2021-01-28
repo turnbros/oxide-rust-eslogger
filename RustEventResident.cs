@@ -5,6 +5,7 @@ using static Oxide.Plugins.RustEventEntity;
 
 namespace Oxide.Plugins
 {
+    [Info("RustEventResident", "RedSys", 1.0)]
     class RustEventResident : RustPlugin
     {
         [Serializable]
