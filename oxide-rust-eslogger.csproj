@@ -522,12 +522,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="01-RustEventEntity.cs" />
-    <Compile Include="02-RustEventServer.cs" />
-    <Compile Include="03-RustEventResident.cs" />
-    <Compile Include="04-RustEventLogEntry.cs" />
-    <Compile Include="05-RustEventLogger.cs" />
-    <Compile Include="06-RustEventResidentAction.cs" />
+    <Compile Include="RustEventEntity.cs" />
+    <Compile Include="RustEventLogEntry.cs" />
+    <Compile Include="RustEventLogger.cs" />
+    <Compile Include="RustEventResident.cs" />
+    <Compile Include="RustEventResidentAction.cs" />
+    <Compile Include="RustEventServer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

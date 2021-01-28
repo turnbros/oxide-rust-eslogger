@@ -11,18 +11,13 @@ namespace Oxide.Plugins
 
         [Serializable]
         public class BaseEventLogEntry
-        {
-            public static int GetTimestamp()
-            {
-                TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
-                return (int)t.TotalSeconds;
-            }
-            public int timestamp;
+        {            
             public int log_format_version = 2;
+            public long timestamp;
             public string event_name;
             public BaseEventLogEntry(string event_name)
             {
-                timestamp = GetTimestamp();
+                timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 this.event_name = event_name;
             }
         }
@@ -31,7 +26,6 @@ namespace Oxide.Plugins
         public class EntityEventLogEntry : BaseEventLogEntry
         {
             
-            public RustEventEntity.Entity resident_subject;
             public RustEventEntity.Entity reporting_entity;
 
             public EntityEventLogEntry(string event_name, BaseEntity entity) : base(event_name)
@@ -40,12 +34,10 @@ namespace Oxide.Plugins
                 if (player != null)
                 {
                     reporting_entity = new RustEventResident.Resident(player);
-                    resident_subject = new RustEventResident.Resident(player);
                 }
                 else
                 {
                     reporting_entity = new RustEventEntity.Entity(entity);
-                    resident_subject = new RustEventEntity.Entity(entity);
                 }
             }
         }
