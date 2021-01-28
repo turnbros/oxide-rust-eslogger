@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Requires: RustEventEntity
+// Requires: RustEventResident
+
+using System;
 
 using static Oxide.Plugins.RustEventEntity;
 using static Oxide.Plugins.RustEventResident;

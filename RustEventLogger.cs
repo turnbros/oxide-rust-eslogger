@@ -34,7 +34,6 @@ namespace Oxide.Plugins
             timer.Every(5f, () =>
             {
                 var mapSize = TerrainMeta.Size.x;
-                var initialColliders = (int)(((mapSize * mapSize) / 1000000) * 1500);
                 int colliders = UnityEngine.Object.FindObjectsOfType<Collider>().Count(x => x.enabled);
                 CreateLogEntry("on_server_event.log", new ServerEventLogEntry(Performance.current, colliders, BasePlayer.activePlayerList.Count()));
             });

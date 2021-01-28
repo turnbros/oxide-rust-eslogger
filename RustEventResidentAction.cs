@@ -1,4 +1,5 @@
-﻿// Requires: RustEventResident
+﻿// Requires: RustEventEntity
+// Requires: RustEventResident
 
 using System;
 
