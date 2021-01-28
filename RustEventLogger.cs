@@ -9,10 +9,10 @@ using ConVar;
 using UnityEngine;
 using System.Linq;
 
-using static Oxide.Plugins.RustEventLogEntry;
-using static Oxide.Plugins.RustEventResident;
-using static Oxide.Plugins.RustEventServer;
-using static Oxide.Plugins.RustEventResidentAction;
+//using static Oxide.Plugins.RustEventLogEntry;
+//using static Oxide.Plugins.RustEventResident;
+//using static Oxide.Plugins.RustEventServer;
+//using static Oxide.Plugins.RustEventResidentAction;
 
 namespace Oxide.Plugins
 {

@@ -2,7 +2,7 @@
 
 using System;
 
-using static Oxide.Plugins.RustEventEntity;
+// using static Oxide.Plugins.RustEventEntity;
 
 namespace Oxide.Plugins
 {
