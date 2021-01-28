@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Requires: RustEventLogEntry
+// Requires: RustEventResident
+// Requires: RustEventServer
+// Requires: RustEventResidentAction
+
+using System;
 using Newtonsoft.Json;
 using ConVar;
 using UnityEngine;
