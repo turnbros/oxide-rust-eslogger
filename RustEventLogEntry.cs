@@ -1,10 +1,17 @@
-﻿using System;
+﻿// Requires: RustEventEntity
+// Requires: RustEventResident
+
+using System;
+using Oxide.Core.Plugins;
 
 namespace Oxide.Plugins
 {
     [Info("RustEventLogEntry", "RedSys", 1.1)]
     class RustEventLogEntry : RustPlugin
     {
+        [PluginReference] Plugin RustEventEntity;
+        [PluginReference] Plugin RustEventResident;
+
         [Serializable]
         public class BaseEventLogEntry
         {
@@ -26,21 +33,22 @@ namespace Oxide.Plugins
         [Serializable]
         public class EntityEventLogEntry : BaseEventLogEntry
         {
-            public Entity resident_subject;
-            public Entity reporting_entity;
+            
+            public RustEventEntity.Entity resident_subject;
+            public RustEventEntity.Entity reporting_entity;
 
             public EntityEventLogEntry(string event_name, BaseEntity entity) : base(event_name)
             {
                 BasePlayer player = entity?.GetComponent<BasePlayer>();
                 if (player != null)
                 {
-                    reporting_entity = new Resident(player);
-                    resident_subject = new Resident(player);
+                    reporting_entity = new RustEventResident.Resident(player);
+                    resident_subject = new RustEventResident.Resident(player);
                 }
                 else
                 {
-                    reporting_entity = new Entity(entity);
-                    resident_subject = new Entity(entity);
+                    reporting_entity = new RustEventEntity.Entity(entity);
+                    resident_subject = new RustEventEntity.Entity(entity);
                 }
             }
         }

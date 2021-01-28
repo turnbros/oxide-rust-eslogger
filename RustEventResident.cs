@@ -1,12 +1,17 @@
-﻿using System;
+﻿// Requires: RustEventEntity
+
+using System;
+using Oxide.Core.Plugins;
 
 namespace Oxide.Plugins
 {
     [Info("RustEventResident", "RedSys", 1.1)]
     class RustEventResident : RustPlugin
     {
+        [PluginReference] Plugin RustEventEntity;
+
         [Serializable]
-        public class Resident : Entity
+        public class Resident : RustEventEntity.Entity
         {
             public ulong user_id = 0;
             public float health = 0;
@@ -35,7 +40,7 @@ namespace Oxide.Plugins
                 is_building_authed = player.IsBuildingAuthed();
                 is_building_blocked = player.IsBuildingBlocked();
                 team = new ResidentTeamMembership(player.Team);
-                location = new EntityLocation(player.transform);
+                location = new RustEventEntity.EntityLocation(player.transform);
 
                 ip_address = player.net.connection.ipaddress.Split(':')[0];
                 port = Int32.Parse(player.net.connection.ipaddress.Split(':')[1]);

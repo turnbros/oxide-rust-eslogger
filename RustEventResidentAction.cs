@@ -1,10 +1,17 @@
-﻿using System;
+﻿// Requires: RustEventEntity
+// Requires: RustEventResident
+
+using System;
+using Oxide.Core.Plugins;
 
 namespace Oxide.Plugins
 {
     [Info("RustEventResidentAction", "RedSys", 1.1)]
     class RustEventResidentAction : RustPlugin
     {
+        [PluginReference] Plugin RustEventEntity;
+        [PluginReference] Plugin RustEventResident;
+
         [Serializable]
         public class GatheredItemAction
         {
@@ -34,8 +41,8 @@ namespace Oxide.Plugins
         [Serializable]
         public class AggressiveAction
         {
-            public Entity aggression_target = new Entity();
-            public Entity aggression_initiator = new Entity();
+            public RustEventEntity.Entity aggression_target = new RustEventEntity.Entity();
+            public RustEventEntity.Entity aggression_initiator = new RustEventEntity.Entity();
             public string weapon_name = "unknown";
             public string weapon_prefab = "unknown";
             public string material_name = "unknown";
@@ -61,9 +68,9 @@ namespace Oxide.Plugins
                 if (info.Initiator != null)
                 {
                     if (info.InitiatorPlayer != null)
-                        aggression_initiator = new Resident(info.InitiatorPlayer);
+                        aggression_initiator = new RustEventResident.Resident(info.InitiatorPlayer);
                     else
-                        aggression_initiator = new Entity(info.Initiator);
+                        aggression_initiator = new RustEventEntity.Entity(info.Initiator);
                 }
 
 
@@ -71,11 +78,11 @@ namespace Oxide.Plugins
                 BasePlayer player = info.HitEntity?.GetComponent<BasePlayer>();
                 if (player != null)
                 {
-                    aggression_target = new Resident(player);
+                    aggression_target = new RustEventResident.Resident(player);
                 }
                 else if (info.HitEntity != null)
                 {
-                    aggression_target = new Entity(info.HitEntity);
+                    aggression_target = new RustEventEntity.Entity(info.HitEntity);
                 }
 
                 // Get the weapons name

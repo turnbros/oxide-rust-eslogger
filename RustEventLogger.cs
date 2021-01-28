@@ -1,19 +1,15 @@
-﻿// Requires: RustEventEntity
-// Requires: RustEventLogEntry
+﻿// Requires: RustEventServer
+// Requires: RustEventEntity
 // Requires: RustEventResident
+// Requires: RustEventLogEntry
 // Requires: RustEventResidentAction
-// Requires: RustEventServer
 
 using System;
 using Newtonsoft.Json;
 using ConVar;
 using UnityEngine;
 using System.Linq;
-
-//using static Oxide.Plugins.RustEventLogEntry;
-//using static Oxide.Plugins.RustEventResident;
-//using static Oxide.Plugins.RustEventServer;
-//using static Oxide.Plugins.RustEventResidentAction;
+using Oxide.Core.Plugins;
 
 namespace Oxide.Plugins
 {
@@ -21,6 +17,12 @@ namespace Oxide.Plugins
     [Description("Logs Rust events")]
     class RustEventLogger : RustPlugin
     {
+
+        [PluginReference] Plugin RustEventServer;
+        [PluginReference] Plugin RustEventEntity;
+        [PluginReference] Plugin RustEventResident;
+        [PluginReference] Plugin RustEventLogEntry;
+        [PluginReference] Plugin RustEventResidentAction;
 
         void CreateLogEntry(string fileName, object eventObject) {
             try {
@@ -47,22 +49,22 @@ namespace Oxide.Plugins
 
         }
         [Serializable]
-        public class OnlineResident : BaseEventLogEntry
+        public class OnlineResident : RustEventLogEntry.BaseEventLogEntry
         {
-            public Resident online_resident = new Resident();
+            public RustEventResident.Resident online_resident = new RustEventResident.Resident();
             public OnlineResident() : base("OnlineResident") {}
             public OnlineResident(BasePlayer player) : base("ServerPlayerList") {
-                online_resident = new Resident(player);
+                online_resident = new RustEventResident.Resident(player);
             }
         }
         [Serializable]
-        public class ServerEventLogEntry : BaseEventLogEntry
+        public class ServerEventLogEntry : RustEventLogEntry.BaseEventLogEntry
         {
-            public ServerState server_state = new ServerState();
+            public RustEventServer.ServerState server_state = new RustEventServer.ServerState();
             public ServerEventLogEntry() : base("ServerState") {}
             public ServerEventLogEntry(Performance.Tick performance, int colliders, int playerCount) : base("ServerEvent")
             {
-                server_state = new ServerState(performance, colliders, playerCount);
+                server_state = new RustEventServer.ServerState(performance, colliders, playerCount);
             }
         }
 
@@ -77,13 +79,13 @@ namespace Oxide.Plugins
             CreateLogEntry("on_player_attack.log", new ResidentAttack(attacker, info));
         }
         [Serializable]
-        public class ResidentAttack : EntityEventLogEntry
+        public class ResidentAttack : RustEventLogEntry.EntityEventLogEntry
         {
-            public AggressiveAction aggressive_act;
+            public RustEventResidentAction.AggressiveAction aggressive_act;
             public ResidentAttack(BasePlayer player, HitInfo info) : base("OnPlayerAttack", player)
             {
-                if (info == null) aggressive_act = new AggressiveAction();
-                else aggressive_act = new AggressiveAction(info);
+                if (info == null) aggressive_act = new RustEventResidentAction.AggressiveAction();
+                else aggressive_act = new RustEventResidentAction.AggressiveAction(info);
             }
         }
 
@@ -97,13 +99,13 @@ namespace Oxide.Plugins
             return null;
         }
         [Serializable]
-        public class ResidentDead : EntityEventLogEntry
+        public class ResidentDead : RustEventLogEntry.EntityEventLogEntry
         {
-            public AggressiveAction aggressive_act;
+            public RustEventResidentAction.AggressiveAction aggressive_act;
             public ResidentDead(BasePlayer player, HitInfo info) : base("OnPlayerDeath", player)
             {
-                if(info == null) aggressive_act = new AggressiveAction();
-                else aggressive_act = new AggressiveAction(info);
+                if(info == null) aggressive_act = new RustEventResidentAction.AggressiveAction();
+                else aggressive_act = new RustEventResidentAction.AggressiveAction(info);
             }
         }
 
@@ -115,12 +117,12 @@ namespace Oxide.Plugins
             CreateLogEntry("on_player_death.log", new ResidentLooted(player, target));
         }
         [Serializable]
-        public class ResidentLooted : EntityEventLogEntry
+        public class ResidentLooted : RustEventLogEntry.EntityEventLogEntry
         {
-            public Resident looted_resident;
+            public RustEventResident.Resident looted_resident;
             public ResidentLooted(BasePlayer player, BasePlayer target) : base("OnLootPlayer", player)
             {
-                looted_resident = new Resident(target);
+                looted_resident = new RustEventResident.Resident(target);
             }
         }
 
@@ -136,10 +138,10 @@ namespace Oxide.Plugins
             CreateLogEntry("on_player_connect.log", new ResidentConnected(player));
         }
         [Serializable]
-        public class ResidentConnected : EntityEventLogEntry {
-            public ResidentConnectionEvent connection_event = new ResidentConnectionEvent();
+        public class ResidentConnected : RustEventLogEntry.EntityEventLogEntry {
+            public RustEventServer.ResidentConnectionEvent connection_event = new RustEventServer.ResidentConnectionEvent();
             public ResidentConnected(BasePlayer player) : base("OnPlayerConnected", player) {
-                connection_event = new ResidentConnectionEvent(true, "connected");
+                connection_event = new RustEventServer.ResidentConnectionEvent(true, "connected");
             }
         }
 
@@ -150,10 +152,10 @@ namespace Oxide.Plugins
             CreateLogEntry("on_player_disconnect.log", new ResidentDisconnected(player, reason));
         }
         [Serializable]
-        public class ResidentDisconnected : EntityEventLogEntry {
-            public ResidentConnectionEvent connection_event = new ResidentConnectionEvent();
+        public class ResidentDisconnected : RustEventLogEntry.EntityEventLogEntry {
+            public RustEventServer.ResidentConnectionEvent connection_event = new RustEventServer.ResidentConnectionEvent();
             public ResidentDisconnected(BasePlayer player, string reason) : base("OnPlayerDisconnected", player) {
-                connection_event = new ResidentConnectionEvent(false, reason);
+                connection_event = new RustEventServer.ResidentConnectionEvent(false, reason);
             }
         }
 
@@ -166,7 +168,7 @@ namespace Oxide.Plugins
             return null;
         }
         [Serializable]
-        public class ResidentChatMessage : EntityEventLogEntry
+        public class ResidentChatMessage : RustEventLogEntry.EntityEventLogEntry
         {
             public string message;
             public string channel;
@@ -206,11 +208,11 @@ namespace Oxide.Plugins
         }
 
         [Serializable]
-        public class ResidentGatheredItem : EntityEventLogEntry
+        public class ResidentGatheredItem : RustEventLogEntry.EntityEventLogEntry
         {
-            public GatheredItemAction gathered_item_action;
+            public RustEventResidentAction.GatheredItemAction gathered_item_action;
             public ResidentGatheredItem(BaseEntity entity, string dispenserName, Item item) : base("OnGather", entity){   
-                    gathered_item_action = new GatheredItemAction(dispenserName, item);
+                    gathered_item_action = new RustEventResidentAction.GatheredItemAction(dispenserName, item);
             }
         }
     }
