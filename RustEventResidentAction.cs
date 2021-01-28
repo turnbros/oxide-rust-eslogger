@@ -5,8 +5,6 @@ using static Oxide.Plugins.RustEventResident;
 
 namespace Oxide.Plugins
 {
-    [Info("RustEventResidentAction", "RedSys", 1.0)]
-    [Description("A helper class for the RustEventLogger")]
     class RustEventResidentAction : RustPlugin
     {
 
