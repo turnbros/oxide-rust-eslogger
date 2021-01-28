@@ -1,5 +1,8 @@
 ﻿using System;
 
+using static Oxide.Plugins.RustEventEntity;
+using static Oxide.Plugins.RustEventResident;
+
 namespace Oxide.Plugins
 {
     [Info("RustEventLogEntry", "RedSys", 1.0)]
@@ -27,21 +30,21 @@ namespace Oxide.Plugins
         [Serializable]
         public class EntityEventLogEntry : BaseEventLogEntry
         {
-            public RustEventEntity.Entity resident_subject;
-            public RustEventEntity.Entity reporting_entity;
+            public Entity resident_subject;
+            public Entity reporting_entity;
 
             public EntityEventLogEntry(string event_name, BaseEntity entity) : base(event_name)
             {
                 BasePlayer player = entity?.GetComponent<BasePlayer>();
                 if (player != null)
                 {
-                    reporting_entity = new RustEventResident.Resident(player);
-                    resident_subject = new RustEventResident.Resident(player);
+                    reporting_entity = new Resident(player);
+                    resident_subject = new Resident(player);
                 }
                 else
                 {
-                    reporting_entity = new RustEventEntity.Entity(entity);
-                    resident_subject = new RustEventEntity.Entity(entity);
+                    reporting_entity = new Entity(entity);
+                    resident_subject = new Entity(entity);
                 }
             }
         }
