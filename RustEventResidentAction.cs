@@ -3,7 +3,7 @@ using Oxide.Core.Plugins;
 
 namespace Oxide.Plugins
 {
-    [Info("RustEventResidentAction", "RedSys", 1.1)]
+    [Info("RustEventResidentAction", "RedSys", 2.0)]
     class RustEventResidentAction : RustPlugin
     {
         [PluginReference] Plugin RustEventEntity;

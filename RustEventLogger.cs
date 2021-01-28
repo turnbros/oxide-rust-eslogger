@@ -7,7 +7,7 @@ using Oxide.Core.Plugins;
 
 namespace Oxide.Plugins
 {
-    [Info("RustEventLogger", "RedSys", 1.1)]
+    [Info("RustEventLogger", "RedSys", 2.0)]
     [Description("Logs Rust events")]
     class RustEventLogger : RustPlugin
     {
