@@ -1,11 +1,10 @@
 ﻿// Requires: RustEventEntity
 
 using System;
+using static Oxide.Plugins.RustEventEntity;
 
 namespace Oxide.Plugins
 {
-    [Info("RustEventResident", "RedSys", 1.0)]
-    [Description("A helper class for the RustEventLogger")]
     class RustEventResident : RustPlugin
     {
         [Serializable]
