@@ -16,7 +16,7 @@ namespace Oxide.Plugins
             public float heart_rate = 0;
             public bool is_building_authed = false;
             public bool is_building_blocked = false;
-            public string ip_address = "0.0.0.0";
+            public string ip_address = "255.255.255.255";
             public int port = 0;
             public string os = "unknown";
             public int seconds_connected = 0;

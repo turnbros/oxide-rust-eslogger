@@ -75,11 +75,11 @@ namespace Oxide.Plugins
         [Serializable]
         public class ResidentAttack : RustEventLogEntry.EntityEventLogEntry
         {
-            public RustEventResidentAction.AggressiveAction aggressive_act;
+            public RustEventResidentAction.AggressiveAction attack;
             public ResidentAttack(BasePlayer player, HitInfo info) : base("OnPlayerAttack", player)
             {
-                if (info == null) aggressive_act = new RustEventResidentAction.AggressiveAction();
-                else aggressive_act = new RustEventResidentAction.AggressiveAction(info);
+                if (info == null) attack = new RustEventResidentAction.AggressiveAction();
+                else attack = new RustEventResidentAction.AggressiveAction(info);
             }
         }
 

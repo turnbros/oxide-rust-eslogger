@@ -38,8 +38,7 @@ namespace Oxide.Plugins
         [Serializable]
         public class AggressiveAction
         {
-            public RustEventEntity.Entity aggression_target = new RustEventEntity.Entity();
-            public RustEventEntity.Entity aggression_initiator = new RustEventEntity.Entity();
+            public RustEventEntity.Entity target_entity = new RustEventEntity.Entity();
             public string weapon_name = "unknown";
             public string weapon_prefab = "unknown";
             public string material_name = "unknown";
@@ -61,25 +60,15 @@ namespace Oxide.Plugins
 
                 if (info == null) return;
 
-                // Get the source of the aggression
-                if (info.Initiator != null)
-                {
-                    if (info.InitiatorPlayer != null)
-                        aggression_initiator = new RustEventResident.Resident(info.InitiatorPlayer);
-                    else
-                        aggression_initiator = new RustEventEntity.Entity(info.Initiator);
-                }
-
-
                 // Get the target of the agression
                 BasePlayer player = info.HitEntity?.GetComponent<BasePlayer>();
                 if (player != null)
                 {
-                    aggression_target = new RustEventResident.Resident(player);
+                    target_entity = new RustEventResident.Resident(player);
                 }
                 else if (info.HitEntity != null)
                 {
-                    aggression_target = new RustEventEntity.Entity(info.HitEntity);
+                    target_entity = new RustEventEntity.Entity(info.HitEntity);
                 }
 
                 // Get the weapons name
