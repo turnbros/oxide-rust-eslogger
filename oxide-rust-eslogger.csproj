@@ -529,5 +529,9 @@
     <Compile Include="RustEventResidentAction.cs" />
     <Compile Include="RustEventServer.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="elasticsearch_template_mappings.ndjson" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

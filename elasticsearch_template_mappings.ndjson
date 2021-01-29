@@ -1,0 +1,281 @@
+/* PUT _component_template/rust_server_player_geo_location */
+{
+    "template": {
+        "mappings": {
+            "properties": {
+                "geoip": {
+                    "properties": {
+                        "location": { "type": "geo_point" }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* PUT _ingest/pipeline/geoip */
+{
+  "description" : "Add geoip info",
+  "processors" : [
+    {
+      "geo_ip_address" : {
+        "field" : "online_resident.ip_address"
+      }
+    }
+  ]
+}
+
+/* PUT _index_template/rust_events */
+{
+  "index_patterns": ["rust-events-*"],
+  "template": {
+    "settings" : {
+        "index.number_of_shards" : 1,
+        "index.number_of_replicas" : 0,
+        "index.final_pipeline" : "geoip"
+    },
+    "mappings": {
+      "properties": {
+        "timestamp": {
+          "type": "date"
+        },
+        "instance_id": {
+            "type": "keyword"
+        },
+        "event_name": {
+          "type": "keyword"
+        },
+        "log_format_version": {
+          "type": "text"
+        }
+      }
+    }
+  },
+  "priority": 1000,
+  "composed_of": [
+    "rust_player_attack_template",
+    "rust_server_state_template",
+    "rust_connection_event_template",
+    "rust_reporting_entity_template",
+    "rust_gathered_item_action_template",
+    "rust_online_resident_template",
+    "rust_server_player_geo_location"
+  ],
+  "_meta": {
+    "source_template": "rust_events"
+  }
+}
+
+/* PUT _component_template/rust_server_state_template */
+{
+  "template": {
+    "mappings": {
+      "properties": {
+        "server_state": {
+          "properties": {
+            "player_count": {"type": "integer"},
+            "fps": {"type": "float"},
+            "colliders": {"type": "integer"},
+            "load_balancer_tasks": {"type": "integer"},
+            "memory_allocations": {"type": "integer"},
+            "memory_collections": {"type": "integer"},
+            "memory_usage_system": {"type": "integer"},
+            "ping": {"type": "integer"}
+          }
+        }
+      }
+    }
+  }
+}
+
+/* PUT _component_template/rust_connection_event_template */
+{
+  "template": {
+    "mappings": {
+      "properties": {
+        "connection_event": {
+          "properties": {
+            "is_connected": {"type": "boolean"},
+            "event_name": {"type": "keyword"},
+            "event_reason": {"type": "text"}
+          }
+        }
+      }
+    }
+  }
+}
+
+/* PUT _component_template/rust_reporting_entity_template */
+{
+  "template": {
+    "mappings": {
+      "properties": {
+        "reporting_entity": {
+          "properties": {
+            "user_id": {"type": "keyword"},
+            "health": {"type": "float"},
+            "heart_rate": {"type": "float"},
+            "is_building_authed": {"type": "boolean"},
+            "is_building_blocked": {"type": "boolean"},
+            "ip_address": {"type": "ip"},
+            "port": {"type": "keyword"},
+            "os": {"type": "keyword"},
+            "seconds_connected": {"type": "integer"},
+            "owner_id": {"type": "keyword"},
+            "name": {"type": "keyword"},
+            "type": {"type": "keyword"},
+            "prefab_id": {"type": "keyword"},
+            "prefab_name": {"type": "keyword"},
+            "prefab_path": {"type": "keyword"},
+            "is_npc": {"type": "boolean"},
+            "location": {
+              "properties": {
+                "x": {"type": "float"},
+                "y": {"type": "float"},
+                "z": {"type": "float"}
+              }
+            },
+            "team": {
+              "properties": {
+                "id": {"type": "keyword"},
+                "name": {"type": "keyword"},
+                "leader": {"type": "keyword"},
+                "start_time": {"type": "float"},
+                "lifetime": {"type": "float"}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/* PUT _component_template/rust_online_resident_template */
+{
+  "template": {
+    "mappings": {
+      "properties": {
+        "online_resident": {
+          "properties": {
+            "user_id": {"type": "keyword"},
+            "health": {"type": "float"},
+            "heart_rate": {"type": "float"},
+            "is_building_authed": {"type": "boolean"},
+            "is_building_blocked": {"type": "boolean"},
+            "ip_address": {"type": "ip"},
+            "port": {"type": "keyword"},
+            "os": {"type": "keyword"},
+            "seconds_connected": {"type": "integer"},
+            "owner_id": {"type": "keyword"},
+            "name": {"type": "keyword"},
+            "type": {"type": "keyword"},
+            "prefab_id": {"type": "keyword"},
+            "prefab_name": {"type": "keyword"},
+            "prefab_path": {"type": "keyword"},
+            "is_npc": {"type": "boolean"},
+            "location": {
+              "properties": {
+                "x": {"type": "float"},
+                "y": {"type": "float"},
+                "z": {"type": "float"}
+              }
+            },
+            "team": {
+              "properties": {
+                "id": {"type": "keyword"},
+                "name": {"type": "keyword"},
+                "leader": {"type": "keyword"},
+                "start_time": {"type": "float"},
+                "lifetime": {"type": "float"}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/* PUT _component_template/rust_player_attack_template */
+{
+  "template": {
+    "mappings": {
+        "properties": {
+            "attack":{
+                "properties": {
+                    "target_entity": {
+                        "properties": {
+                            "user_id": {"type": "keyword"},
+                            "health": {"type": "float"},
+                            "heart_rate": {"type": "float"},
+                            "is_building_authed": {"type": "boolean"},
+                            "is_building_blocked": {"type": "boolean"},
+                            "ip_address": {"type": "ip"},
+                            "port": {"type": "keyword"},
+                            "os": {"type": "keyword"},
+                            "seconds_connected": {"type": "integer"},
+                            "owner_id": {"type": "keyword"},
+                            "name": {"type": "keyword"},
+                            "type": {"type": "keyword"},
+                            "prefab_id": {"type": "keyword"},
+                            "prefab_name": {"type": "keyword"},
+                            "prefab_path": {"type": "keyword"},
+                            "is_npc": {"type": "boolean"},
+                            "location": {
+                                "properties": {
+                                    "x": {"type": "float"},
+                                    "y": {"type": "float"},
+                                    "z": {"type": "float"}
+                                }
+                            },
+                            "team": {
+                                "properties": {
+                                    "id": {"type": "keyword"},
+                                    "name": {"type": "keyword"},
+                                    "leader": {"type": "keyword"},
+                                    "start_time": {"type": "float"},
+                                    "lifetime": {"type": "float"}
+                                }
+                            }
+                        }
+                    },
+                    "weapon_name": {"type": "keyword"},
+                    "weapon_prefab": {"type": "keyword"},
+                    "material_name": {"type": "keyword"},
+                    "did_gather": {"type": "boolean"},
+                    "did_hit": {"type": "boolean"},
+                    "is_projectile": {"type": "boolean"},
+                    "is_headshot": {"type": "boolean"},
+                    "is_attack": {"type": "boolean"},
+                    "damage_name": {"type": "keyword"},
+                    "damage_type": {"type": "keyword"},
+                    "damage_delt": {"type": "float"},
+                    "projectile_distance": {"type": "float"}
+                }
+            }
+        }
+    }
+  }
+}
+       
+/* PUT _component_template/rust_gathered_item_action_template */
+{
+  "template": {
+    "mappings": {
+      "properties": {
+        "gathered_item_action": {
+          "properties": {
+            "dispenser": {"type": "keyword"},
+            "name": {"type": "keyword"},
+            "category": {"type": "keyword"},
+            "amount": {"type": "integer"}
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
