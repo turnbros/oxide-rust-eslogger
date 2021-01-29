@@ -18,8 +18,9 @@
   "description" : "Add geoip info",
   "processors" : [
     {
-      "geo_ip_address" : {
-        "field" : "online_resident.ip_address"
+      "geoip" : {
+        "field" : "online_resident.ip_address",
+        "ignore_missing": true
       }
     }
   ]
