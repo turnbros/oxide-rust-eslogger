@@ -106,6 +106,22 @@
   }
 }
 
+/* PUT _component_template/rust_chat_message_template */
+{
+  "template": {
+    "mappings": {
+      "properties": {
+        "chat_message": {
+          "properties": {
+            "channel": {"type": "keyword"},
+            "message": {"type": "text"}
+          }
+        }
+      }
+    }
+  }
+}
+
 /* PUT _component_template/rust_reporting_entity_template */
 {
   "template": {
@@ -277,6 +293,3 @@
     }
   }
 }
-
-
-

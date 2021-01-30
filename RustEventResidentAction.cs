@@ -36,6 +36,17 @@ namespace Oxide.Plugins
         }
 
         [Serializable]
+        public class ChatMessage {
+            public string channel = "unknown";
+            public string message = "unknown";
+            public ChatMessage() { }
+            public ChatMessage(string channel, string message) {
+                this.channel = channel;
+                this.message = message;
+            }
+        }
+
+        [Serializable]
         public class AggressiveAction
         {
             public RustEventEntity.Entity target_entity = new RustEventEntity.Entity();

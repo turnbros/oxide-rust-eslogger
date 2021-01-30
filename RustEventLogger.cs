@@ -156,20 +156,15 @@ namespace Oxide.Plugins
 
         // On Player Chat
         // Called when the player sends chat to the server
-        object OnPlayerChat(BasePlayer player, string message, Chat.ChatChannel channel)
-        {
+        object OnPlayerChat(BasePlayer player, string message, Chat.ChatChannel channel) {
             CreateLogEntry("on_player_chat.log", new ResidentChatMessage(player, message, channel.ToString()));
             return null;
         }
         [Serializable]
-        public class ResidentChatMessage : RustEventLogEntry.EntityEventLogEntry
-        {
-            public string message;
-            public string channel;
-            public ResidentChatMessage(BasePlayer player, string message, string channel) : base("OnPlayerChat", player)
-            {
-                this.message = message;
-                this.channel = channel;
+        public class ResidentChatMessage : RustEventLogEntry.EntityEventLogEntry {
+            public RustEventResidentAction.ChatMessage chat_message = new RustEventResidentAction.ChatMessage();
+            public ResidentChatMessage(BasePlayer player, string message, string channel) : base("OnPlayerChat", player) {
+                chat_message = new RustEventResidentAction.ChatMessage(channel, message);
             }
         }
 
