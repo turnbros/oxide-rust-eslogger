@@ -60,7 +60,10 @@
     "rust_reporting_entity_template",
     "rust_gathered_item_action_template",
     "rust_online_resident_template",
-    "rust_server_player_geo_location"
+    "rust_server_player_geo_location",
+    "rust_looted_item_action_template",
+    "rust_crafted_item_action_template"
+
   ],
   "_meta": {
     "source_template": "rust_events"
@@ -284,6 +287,77 @@
         "gathered_item_action": {
           "properties": {
             "dispenser": {"type": "keyword"},
+            "name": {"type": "keyword"},
+            "category": {"type": "keyword"},
+            "amount": {"type": "integer"}
+          }
+        }
+      }
+    }
+  }
+}
+
+/* PUT _component_template/rust_crafted_item_action_template */
+{
+  "template": {
+    "mappings": {
+      "properties": {
+        "crafted_item_action": {
+          "properties": {
+            "name": {"type": "keyword"},
+            "category": {"type": "keyword"},
+            "amount": {"type": "integer"},
+            "number_crafted": {"type": "integer"}
+          }
+        }
+      }
+    }
+  }
+}
+
+/* PUT _component_template/rust_looted_item_action_template */
+{
+  "template": {
+    "mappings": {
+      "properties": {
+        "crafted_item_action": {
+          "properties": {
+            "looted_entity": {
+                "properties": {
+                    "user_id": {"type": "keyword"},
+                    "health": {"type": "float"},
+                    "heart_rate": {"type": "float"},
+                    "is_building_authed": {"type": "boolean"},
+                    "is_building_blocked": {"type": "boolean"},
+                    "ip_address": {"type": "ip"},
+                    "port": {"type": "keyword"},
+                    "os": {"type": "keyword"},
+                    "seconds_connected": {"type": "integer"},
+                    "owner_id": {"type": "keyword"},
+                    "name": {"type": "keyword"},
+                    "type": {"type": "keyword"},
+                    "prefab_id": {"type": "keyword"},
+                    "prefab_name": {"type": "keyword"},
+                    "prefab_path": {"type": "keyword"},
+                    "is_npc": {"type": "boolean"},
+                    "location": {
+                        "properties": {
+                            "x": {"type": "float"},
+                            "y": {"type": "float"},
+                            "z": {"type": "float"}
+                        }
+                    },
+                    "team": {
+                        "properties": {
+                            "id": {"type": "keyword"},
+                            "name": {"type": "keyword"},
+                            "leader": {"type": "keyword"},
+                            "start_time": {"type": "float"},
+                            "lifetime": {"type": "float"}
+                        }
+                    }
+                }
+            },
             "name": {"type": "keyword"},
             "category": {"type": "keyword"},
             "amount": {"type": "integer"}

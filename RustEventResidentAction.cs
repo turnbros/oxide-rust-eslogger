@@ -36,6 +36,45 @@ namespace Oxide.Plugins
         }
 
         [Serializable]
+        public class CraftItemAction {
+            public string name = "unknown";
+            public string category = "unknown";
+
+            // Not sure yet what the difference between the numbers will be
+            public int amount = 0;
+            public int number_crafted = 0;
+
+            public CraftItemAction(Item item, int numCrafted) {
+                if (item == null) return;
+
+                amount = item.amount;
+                number_crafted = numCrafted;
+
+                if (item.info != null) {
+                    name = item.info.displayName.english;
+                    category = item.info.category.ToString();
+                }
+            }
+        }
+
+        [Serializable]
+        public class LootItemAction {
+            public string name = "unknown";
+            public string category = "unknown";
+            public int amount = 0;
+            public RustEventResident.Resident looted_resident = new RustEventResident.Resident();
+            public LootItemAction(Item item) {
+                if (item?.info != null) {
+                    name = item.info.displayName.english;
+                    category = item.info.category.ToString();
+                    amount = item.amount;
+                    if (item.GetOwnerPlayer() != null)
+                        looted_resident = new RustEventResident.Resident(item.GetOwnerPlayer());
+                }
+            }
+        }
+
+        [Serializable]
         public class ChatMessage {
             public string channel = "unknown";
             public string message = "unknown";

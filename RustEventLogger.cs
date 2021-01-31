@@ -18,10 +18,14 @@ namespace Oxide.Plugins
         [PluginReference] Plugin RustEventLogEntry;
         [PluginReference] Plugin RustEventResidentAction;
 
-        void CreateLogEntry(string fileName, object eventObject) {
-            try {
+        void CreateLogEntry(string fileName, object eventObject)
+        {
+            try
+            {
                 LogToFile(fileName, JsonConvert.SerializeObject(eventObject), this);
-            } catch (Exception error) {
+            }
+            catch (Exception error)
+            {
                 LogToFile("error.log", $"[{DateTime.Now}] ERROR - {error.Message} - {error.StackTrace}", this);
             }
         }
@@ -46,8 +50,9 @@ namespace Oxide.Plugins
         public class OnlineResident : RustEventLogEntry.BaseEventLogEntry
         {
             public RustEventResident.Resident online_resident = new RustEventResident.Resident();
-            public OnlineResident() : base("OnlineResident") {}
-            public OnlineResident(BasePlayer player) : base("ServerPlayerList") {
+            public OnlineResident() : base("OnlineResident") { }
+            public OnlineResident(BasePlayer player) : base("ServerPlayerList")
+            {
                 online_resident = new RustEventResident.Resident(player);
             }
         }
@@ -55,7 +60,7 @@ namespace Oxide.Plugins
         public class ServerEventLogEntry : RustEventLogEntry.BaseEventLogEntry
         {
             public RustEventServer.ServerState server_state = new RustEventServer.ServerState();
-            public ServerEventLogEntry() : base("ServerState") {}
+            public ServerEventLogEntry() : base("ServerState") { }
             public ServerEventLogEntry(Performance.Tick performance, int colliders, int playerCount) : base("ServerEvent")
             {
                 server_state = new RustEventServer.ServerState(performance, colliders, playerCount);
@@ -98,7 +103,7 @@ namespace Oxide.Plugins
             public RustEventResidentAction.AggressiveAction aggressive_act;
             public ResidentDead(BasePlayer player, HitInfo info) : base("OnPlayerDeath", player)
             {
-                if(info == null) aggressive_act = new RustEventResidentAction.AggressiveAction();
+                if (info == null) aggressive_act = new RustEventResidentAction.AggressiveAction();
                 else aggressive_act = new RustEventResidentAction.AggressiveAction(info);
             }
         }
@@ -128,13 +133,16 @@ namespace Oxide.Plugins
 
         // On Player Connected
         // Called after the player object is created, but before the player has spawned
-        void OnPlayerConnected(BasePlayer player) {
+        void OnPlayerConnected(BasePlayer player)
+        {
             CreateLogEntry("on_player_connect.log", new ResidentConnected(player));
         }
         [Serializable]
-        public class ResidentConnected : RustEventLogEntry.EntityEventLogEntry {
+        public class ResidentConnected : RustEventLogEntry.EntityEventLogEntry
+        {
             public RustEventServer.ResidentConnectionEvent connection_event = new RustEventServer.ResidentConnectionEvent();
-            public ResidentConnected(BasePlayer player) : base("OnPlayerConnected", player) {
+            public ResidentConnected(BasePlayer player) : base("OnPlayerConnected", player)
+            {
                 connection_event = new RustEventServer.ResidentConnectionEvent(true, "connected");
             }
         }
@@ -142,13 +150,16 @@ namespace Oxide.Plugins
 
         // On Player Disconnected
         // Called after the player has disconnected from the server
-        void OnPlayerDisconnected(BasePlayer player, string reason) {
+        void OnPlayerDisconnected(BasePlayer player, string reason)
+        {
             CreateLogEntry("on_player_disconnect.log", new ResidentDisconnected(player, reason));
         }
         [Serializable]
-        public class ResidentDisconnected : RustEventLogEntry.EntityEventLogEntry {
+        public class ResidentDisconnected : RustEventLogEntry.EntityEventLogEntry
+        {
             public RustEventServer.ResidentConnectionEvent connection_event = new RustEventServer.ResidentConnectionEvent();
-            public ResidentDisconnected(BasePlayer player, string reason) : base("OnPlayerDisconnected", player) {
+            public ResidentDisconnected(BasePlayer player, string reason) : base("OnPlayerDisconnected", player)
+            {
                 connection_event = new RustEventServer.ResidentConnectionEvent(false, reason);
             }
         }
@@ -156,14 +167,17 @@ namespace Oxide.Plugins
 
         // On Player Chat
         // Called when the player sends chat to the server
-        object OnPlayerChat(BasePlayer player, string message, Chat.ChatChannel channel) {
+        object OnPlayerChat(BasePlayer player, string message, Chat.ChatChannel channel)
+        {
             CreateLogEntry("on_player_chat.log", new ResidentChatMessage(player, message, channel.ToString()));
             return null;
         }
         [Serializable]
-        public class ResidentChatMessage : RustEventLogEntry.EntityEventLogEntry {
+        public class ResidentChatMessage : RustEventLogEntry.EntityEventLogEntry
+        {
             public RustEventResidentAction.ChatMessage chat_message = new RustEventResidentAction.ChatMessage();
-            public ResidentChatMessage(BasePlayer player, string message, string channel) : base("OnPlayerChat", player) {
+            public ResidentChatMessage(BasePlayer player, string message, string channel) : base("OnPlayerChat", player)
+            {
                 chat_message = new RustEventResidentAction.ChatMessage(channel, message);
             }
         }
@@ -178,20 +192,23 @@ namespace Oxide.Plugins
 
         // On Growable Gathered
         // Called before the player receives an item from gathering a growable entity
-        void OnGrowableGathered(GrowableEntity plant, Item item, BasePlayer player) {
+        void OnGrowableGathered(GrowableEntity plant, Item item, BasePlayer player)
+        {
             CreateLogEntry("on_player_gather.log", new ResidentGatheredItem(player, plant?.name, item));
         }
 
         // On Dispenser Gather
         // Called before the player is given items from a resource
-        object OnDispenserGather(ResourceDispenser dispenser, BaseEntity entity, Item item) {
+        object OnDispenserGather(ResourceDispenser dispenser, BaseEntity entity, Item item)
+        {
             CreateLogEntry("on_player_gather.log", new ResidentGatheredItem(entity, dispenser?.name, item));
             return null; // Always return null!
         }
 
         // On Dispenser Bonus
         // Called before the player is given a bonus item for gathering
-        object OnDispenserBonus(ResourceDispenser dispenser, BasePlayer player, Item item) {
+        object OnDispenserBonus(ResourceDispenser dispenser, BasePlayer player, Item item)
+        {
             CreateLogEntry("on_player_gather.log", new ResidentGatheredItem(player, dispenser?.name, item));
             return null; // Always return null!
         }
@@ -200,8 +217,42 @@ namespace Oxide.Plugins
         public class ResidentGatheredItem : RustEventLogEntry.EntityEventLogEntry
         {
             public RustEventResidentAction.GatheredItemAction gathered_item_action;
-            public ResidentGatheredItem(BaseEntity entity, string dispenserName, Item item) : base("OnGather", entity){   
-                    gathered_item_action = new RustEventResidentAction.GatheredItemAction(dispenserName, item);
+            public ResidentGatheredItem(BaseEntity entity, string dispenserName, Item item) : base("OnGather", entity)
+            {
+                gathered_item_action = new RustEventResidentAction.GatheredItemAction(dispenserName, item);
+            }
+        }
+
+        // On Item Craft
+        // Called right after an item is added to the crafting queue
+        object OnItemCraft(ItemCraftTask task, BasePlayer player, Item item)
+        {
+            CreateLogEntry("on_player_craft.log", new ResidentCraftedItem(player, task, item));
+            return null; // Always return null!
+        }
+        [Serializable]
+        public class ResidentCraftedItem : RustEventLogEntry.EntityEventLogEntry
+        {
+            public RustEventResidentAction.CraftItemAction crafted_item_action;
+            public ResidentCraftedItem(BasePlayer player, ItemCraftTask task, Item item) : base("OnItemCraft", player)
+            {
+                crafted_item_action = new RustEventResidentAction.CraftItemAction(item, task.numCrafted);
+            }
+        }
+
+        // On Loot Item
+        // Called when the player starts looting an item
+        void OnLootItem(BasePlayer player, Item item)
+        {
+            CreateLogEntry("on_player_loot.log", new ResidentLootedItem(player, item));
+        }
+        [Serializable]
+        public class ResidentLootedItem : RustEventLogEntry.EntityEventLogEntry
+        { 
+            public RustEventResidentAction.LootItemAction looted_item_action;
+            public ResidentLootedItem(BasePlayer player, Item item) : base("OnLootItem", player)
+            {
+                looted_item_action = new RustEventResidentAction.LootItemAction(item);
             }
         }
     }
