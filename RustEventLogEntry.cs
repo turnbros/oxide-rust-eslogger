@@ -26,11 +26,13 @@ namespace Oxide.Plugins
         public class EntityEventLogEntry : BaseEventLogEntry
         {
             
-            public RustEventEntity.Entity reporting_entity;
+            public RustEventEntity.Entity reporting_entity = new RustEventEntity.Entity();
 
             public EntityEventLogEntry(string event_name, BaseEntity entity) : base(event_name)
             {
-                BasePlayer player = entity?.GetComponent<BasePlayer>();
+                if (entity == null) return;
+
+                BasePlayer player = entity.GetComponent<BasePlayer>();
                 if (player != null)
                 {
                     reporting_entity = new RustEventResident.Resident(player);
