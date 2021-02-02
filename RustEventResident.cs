@@ -34,17 +34,21 @@ namespace Oxide.Plugins
                 prefab_name = player.ShortPrefabName;
                 is_npc = player.IsNpc;
                 health = player.health;
+                location = new RustEventEntity.EntityLocation(player.transform);
 
                 is_building_authed = player.IsBuildingAuthed();
                 is_building_blocked = player.IsBuildingBlocked();
-                team = new ResidentTeamMembership(player.Team);
-                location = new RustEventEntity.EntityLocation(player.transform);
 
-                ip_address = player.net.connection.ipaddress.Split(':')[0];
-                port = Int32.Parse(player.net.connection.ipaddress.Split(':')[1]);
-                os = player.net.connection.os;
-                seconds_connected = (int)player.Connection.GetSecondsConnected();
+                if(player.Team != null)
+                    team = new ResidentTeamMembership(player.Team);
 
+                if (player.net?.connection?.ipaddress != null) {
+                    ip_address = player.net.connection.ipaddress.Split(':')[0];
+                    port = Int32.Parse(player.net.connection.ipaddress.Split(':')[1]);
+                    os = player.net.connection.os;
+                    seconds_connected = (int)player.Connection.GetSecondsConnected();
+                }
+                
                 if (player.metabolism?.heartrate?.value != null)
                     heart_rate = player.metabolism.heartrate.value;
             }
